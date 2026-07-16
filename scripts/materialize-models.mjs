@@ -8,22 +8,13 @@ const root = process.cwd();
 const models = [
   {
     output: "public/models/sony_wh-1000xm5.glb",
-    expectedGzipSha256: "cfc4b31fff0f96c30fddb7632f5a25bb66b56bd15f9f767fa91f7298bc9454a9",
-    parts: [
-      "assets/model-payloads/v2/sony_wh-1000xm5.glb.gz.b64.00",
-      "assets/model-payloads/v2/sony_wh-1000xm5.glb.gz.b64.01a",
-      "assets/model-payloads/v2/sony_wh-1000xm5.glb.gz.b64.01b",
-      "assets/model-payloads/v2/sony_wh-1000xm5.glb.gz.b64.02",
-    ],
+    expectedGzipSha256: "597254fee444302818171366a888efa3b5ca7fc3b1cc6b5df84a846dc3a140e8",
+    parts: ["assets/model-payloads/v3/sony_wh-1000xm5.glb.gz.b64"],
   },
   {
     output: "public/models/blue_yeti_microphone.glb",
-    expectedGzipSha256: "493416203e09ca86ed3a64c373bc656ed98ac5ed301ff6ce011af0a32a8350c7",
-    parts: [
-      "assets/model-payloads/v2/blue_yeti_microphone.glb.gz.b64.00",
-      "assets/model-payloads/v2/blue_yeti_microphone.glb.gz.b64.01a",
-      "assets/model-payloads/v2/blue_yeti_microphone.glb.gz.b64.01b",
-    ],
+    expectedGzipSha256: "944f8710c25eb8dd6a1b4d4e92a2e5674e92cf2645e400d9b261c9b6d0681fcc",
+    parts: ["assets/model-payloads/v3/blue_yeti_microphone.glb.gz.b64"],
   },
 ];
 
