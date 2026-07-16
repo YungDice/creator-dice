@@ -13,6 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import * as THREE from "three";
+import DeskMusicModels from "@/components/three/DeskMusicModels";
 import DeskSetup, { DESK_TOP_Y } from "@/components/three/DeskSetup";
 import DiceMastersCards from "@/components/three/DiceMastersCards";
 import GamingChair from "@/components/three/GamingChair";
@@ -68,7 +69,8 @@ function ReadySignal({ onReady }: { onReady?: () => void }) {
 /**
  * The desk model already contains a glass side panel. This pass gives that
  * panel a visible warm tint and replaces the PC's cyan/purple RGB with amber
- * light without changing the rest of the workstation.
+ * light without changing the rest of the workstation. It also hides the old
+ * procedural microphone and headphones so the uploaded GLBs can replace them.
  */
 function WarmWorkstation({
   phase,
@@ -90,6 +92,27 @@ function WarmWorkstation({
 
     group.traverse((object) => {
       object.getWorldPosition(position);
+
+      const oldHeadphones =
+        position.x > -0.78 &&
+        position.x < -0.46 &&
+        position.y > DESK_TOP_Y - 0.01 &&
+        position.y < DESK_TOP_Y + 0.18 &&
+        position.z > 0.34 &&
+        position.z < 0.62;
+      const oldMicrophone =
+        position.x > -0.59 &&
+        position.x < -0.37 &&
+        position.y > DESK_TOP_Y - 0.01 &&
+        position.y < DESK_TOP_Y + 0.32 &&
+        position.z > 0.25 &&
+        position.z < 0.43;
+
+      if (oldHeadphones || oldMicrophone) {
+        object.visible = false;
+        return;
+      }
+
       const insidePc =
         position.x > 0.68 &&
         position.x < 1.08 &&
@@ -156,10 +179,13 @@ function WarmWorkstation({
   }, []);
 
   return (
-    <group ref={root}>
-      <DeskSetup phase={phase} screenContent={screenContent} />
-      <WarmPcGlass />
-    </group>
+    <>
+      <group ref={root}>
+        <DeskSetup phase={phase} screenContent={screenContent} />
+        <WarmPcGlass />
+      </group>
+      <DeskMusicModels />
+    </>
   );
 }
 
