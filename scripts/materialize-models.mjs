@@ -8,7 +8,7 @@ const root = process.cwd();
 const models = [
   {
     output: "public/models/sony_wh-1000xm5.glb",
-    expectedGzipSha256: "0d0188b8a43f6e322c88aa16f7eb4b705c6ab0a56ef5c1ca02187c0ae61972ea",
+    expectedGzipSha256: "80ffc6094ceee7ba04aaa5a0663fcaf5b2ccfbdd5bb48d9ee70f3e24f214c8ae",
     parts: [
       "assets/model-payloads/sony_wh-1000xm5.glb.gz.b64.00",
       "assets/model-payloads/sony_wh-1000xm5.glb.gz.b64.01",
