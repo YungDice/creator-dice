@@ -1,75 +1,75 @@
 "use client";
 
-import { RoundedBox, useGLTF } from "@react-three/drei";
-import { useLayoutEffect, useMemo } from "react";
-import * as THREE from "three";
-import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import { RoundedBox } from "@react-three/drei";
 
-export const VROID_MODEL_URLS = {
-  a: "https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/stable/AvatarSample_A.vrm",
-  b: "https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/stable/AvatarSample_B.vrm",
-} as const;
-
-type ModelKey = keyof typeof VROID_MODEL_URLS;
+type ModelKey = "a" | "b";
 type FigurePose = "relaxed" | "wave" | "hero";
 
-function findBone(root: THREE.Object3D, names: string[]): THREE.Object3D | undefined {
-  for (const name of names) {
-    const exact = root.getObjectByName(name);
-    if (exact) return exact;
-  }
+type Palette = {
+  hair: string;
+  hairAccent: string;
+  outfit: string;
+  outfitAccent: string;
+  skin: string;
+  eyes: string;
+};
 
-  const normalized = names.map((name) => name.toLowerCase().replace(/[^a-z]/g, ""));
-  let match: THREE.Object3D | undefined;
-  root.traverse((object) => {
-    if (match) return;
-    const current = object.name.toLowerCase().replace(/[^a-z]/g, "");
-    if (normalized.some((name) => current.endsWith(name) || current.includes(name))) match = object;
-  });
-  return match;
-}
+const PALETTES: Record<ModelKey, Palette> = {
+  a: {
+    hair: "#4B2B22",
+    hairAccent: "#8A5540",
+    outfit: "#D9D0C6",
+    outfitAccent: "#7D4C3A",
+    skin: "#F0C5AC",
+    eyes: "#34242A",
+  },
+  b: {
+    hair: "#6C5A94",
+    hairAccent: "#B59BD8",
+    outfit: "#382E52",
+    outfitAccent: "#D8B6EE",
+    skin: "#EEC3AF",
+    eyes: "#2B2438",
+  },
+};
 
-function setRotation(
-  root: THREE.Object3D,
-  names: string[],
-  rotation: [number, number, number],
-) {
-  const bone = findBone(root, names);
-  if (bone) bone.rotation.set(...rotation);
-}
+function FigureArm({
+  side,
+  pose,
+  skin,
+  sleeve,
+}: {
+  side: -1 | 1;
+  pose: FigurePose;
+  skin: string;
+  sleeve: string;
+}) {
+  const raised = pose === "hero" || (pose === "wave" && side === 1);
+  const upperRotation: [number, number, number] = raised
+    ? [0, 0, side * -0.92]
+    : [0.08, 0, side * 0.34];
+  const lowerRotation: [number, number, number] = raised
+    ? [0, 0, side * -0.22]
+    : [0, 0, side * 0.18];
 
-function applyPose(root: THREE.Object3D, pose: FigurePose) {
-  const leftUpper = ["J_Bip_L_UpperArm", "LeftUpperArm", "leftUpperArm"];
-  const rightUpper = ["J_Bip_R_UpperArm", "RightUpperArm", "rightUpperArm"];
-  const leftLower = ["J_Bip_L_LowerArm", "LeftLowerArm", "leftLowerArm"];
-  const rightLower = ["J_Bip_R_LowerArm", "RightLowerArm", "rightLowerArm"];
-  const head = ["J_Bip_C_Head", "Head", "head"];
-  const hips = ["J_Bip_C_Hips", "Hips", "hips"];
-
-  if (pose === "wave") {
-    setRotation(root, leftUpper, [0.05, 0.05, -1.12]);
-    setRotation(root, leftLower, [0, 0, -0.12]);
-    setRotation(root, rightUpper, [-0.2, -0.05, 0.28]);
-    setRotation(root, rightLower, [0.05, 0.05, 1.45]);
-    setRotation(root, head, [0.02, -0.16, 0.05]);
-    setRotation(root, hips, [0, 0.06, 0]);
-    return;
-  }
-
-  if (pose === "hero") {
-    setRotation(root, leftUpper, [0.1, 0.05, -0.86]);
-    setRotation(root, rightUpper, [0.1, -0.05, 0.86]);
-    setRotation(root, leftLower, [-0.05, 0, -0.28]);
-    setRotation(root, rightLower, [-0.05, 0, 0.28]);
-    setRotation(root, head, [-0.03, 0.12, -0.03]);
-    return;
-  }
-
-  setRotation(root, leftUpper, [0.08, 0.02, -1.08]);
-  setRotation(root, rightUpper, [0.08, -0.02, 1.08]);
-  setRotation(root, leftLower, [-0.06, 0.02, -0.18]);
-  setRotation(root, rightLower, [-0.06, -0.02, 0.18]);
-  setRotation(root, head, [0.02, 0.08, -0.02]);
+  return (
+    <group position={[side * 0.031, 0.139, 0]} rotation={upperRotation}>
+      <mesh position={[0, -0.018, 0]}>
+        <capsuleGeometry args={[0.0065, 0.03, 4, 8]} />
+        <meshStandardMaterial color={sleeve} roughness={0.55} />
+      </mesh>
+      <group position={[0, -0.045, 0]} rotation={lowerRotation}>
+        <mesh position={[0, -0.016, 0]}>
+          <capsuleGeometry args={[0.0055, 0.026, 4, 8]} />
+          <meshStandardMaterial color={skin} roughness={0.58} />
+        </mesh>
+        <mesh position={[0, -0.036, 0.001]}>
+          <sphereGeometry args={[0.007, 10, 8]} />
+          <meshStandardMaterial color={skin} roughness={0.58} />
+        </mesh>
+      </group>
+    </group>
+  );
 }
 
 export default function VroidFigure({
@@ -87,33 +87,110 @@ export default function VroidFigure({
   pose?: FigurePose;
   baseColor?: string;
 }) {
-  const gltf = useGLTF(VROID_MODEL_URLS[model]) as unknown as { scene: THREE.Group };
-  const figure = useMemo(() => clone(gltf.scene) as THREE.Group, [gltf.scene]);
-
-  useLayoutEffect(() => {
-    figure.traverse((object) => {
-      const mesh = object as THREE.Mesh;
-      if (!mesh.isMesh) return;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      mesh.frustumCulled = false;
-    });
-    applyPose(figure, pose);
-  }, [figure, pose]);
+  const palette = PALETTES[model];
+  const normalizedScale = scale / 0.1;
+  const headTilt = pose === "wave" ? -0.08 : pose === "hero" ? 0.04 : 0;
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
-      <RoundedBox args={[0.12, 0.018, 0.1]} radius={0.007} smoothness={3} position={[0, 0.009, 0]} castShadow>
-        <meshStandardMaterial color={baseColor} roughness={0.28} metalness={0.42} />
+      <RoundedBox
+        args={[0.12, 0.018, 0.1]}
+        radius={0.007}
+        smoothness={2}
+        position={[0, 0.009, 0]}
+        castShadow
+      >
+        <meshStandardMaterial color={baseColor} roughness={0.3} metalness={0.38} />
       </RoundedBox>
-      <mesh position={[0, 0.019, 0]}>
-        <cylinderGeometry args={[0.043, 0.048, 0.012, 32]} />
-        <meshStandardMaterial color="#2C3036" roughness={0.25} metalness={0.55} />
+      <mesh position={[0, 0.019, 0]} castShadow>
+        <cylinderGeometry args={[0.043, 0.048, 0.012, 16]} />
+        <meshStandardMaterial color="#2C3036" roughness={0.28} metalness={0.5} />
       </mesh>
-      <primitive object={figure} scale={scale} position={[0, 0.025, 0]} />
+
+      {/* Lightweight original anime-style collectible. Its face points toward +Z,
+          so shelf instances now face the room/camera instead of the wall. */}
+      <group scale={normalizedScale} position={[0, 0.025, 0]}>
+        {([-1, 1] as const).map((side) => (
+          <group key={side} position={[side * 0.013, 0.06, 0]}>
+            <mesh position={[0, 0.016, 0]} castShadow>
+              <capsuleGeometry args={[0.0065, 0.04, 4, 8]} />
+              <meshStandardMaterial color={palette.skin} roughness={0.58} />
+            </mesh>
+            <RoundedBox
+              args={[0.016, 0.027, 0.021]}
+              radius={0.004}
+              smoothness={2}
+              position={[0, -0.018, 0.004]}
+              castShadow
+            >
+              <meshStandardMaterial color="#1B1D22" roughness={0.48} />
+            </RoundedBox>
+          </group>
+        ))}
+
+        <mesh position={[0, 0.105, 0]} castShadow>
+          <coneGeometry args={[0.035, 0.052, 14]} />
+          <meshStandardMaterial color={palette.outfit} roughness={0.5} />
+        </mesh>
+        <mesh position={[0, 0.142, 0]} castShadow>
+          <capsuleGeometry args={[0.021, 0.041, 5, 10]} />
+          <meshStandardMaterial color={palette.outfit} roughness={0.5} />
+        </mesh>
+        <mesh position={[0, 0.149, 0.022]}>
+          <boxGeometry args={[0.036, 0.008, 0.005]} />
+          <meshStandardMaterial color={palette.outfitAccent} roughness={0.4} />
+        </mesh>
+        <mesh position={[0, 0.141, 0.025]} rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.014, 0.014, 0.005]} />
+          <meshStandardMaterial color={palette.outfitAccent} roughness={0.4} />
+        </mesh>
+
+        <FigureArm side={-1} pose={pose} skin={palette.skin} sleeve={palette.outfit} />
+        <FigureArm side={1} pose={pose} skin={palette.skin} sleeve={palette.outfit} />
+
+        <group position={[0, 0.194, 0]} rotation={[0, 0, headTilt]}>
+          <mesh castShadow>
+            <sphereGeometry args={[0.03, 16, 12]} />
+            <meshStandardMaterial color={palette.skin} roughness={0.56} />
+          </mesh>
+          <mesh position={[0, 0.006, -0.013]} scale={[1.06, 1.13, 0.88]} castShadow>
+            <sphereGeometry args={[0.031, 14, 10]} />
+            <meshStandardMaterial color={palette.hair} roughness={0.54} />
+          </mesh>
+          <mesh position={[-0.013, 0.019, 0.015]} rotation={[0.15, 0, 0.24]} castShadow>
+            <coneGeometry args={[0.01, 0.038, 9]} />
+            <meshStandardMaterial color={palette.hair} roughness={0.54} />
+          </mesh>
+          <mesh position={[0.013, 0.019, 0.015]} rotation={[0.15, 0, -0.24]} castShadow>
+            <coneGeometry args={[0.01, 0.038, 9]} />
+            <meshStandardMaterial color={palette.hair} roughness={0.54} />
+          </mesh>
+          {model === "b" && (
+            <>
+              <mesh position={[-0.019, 0.032, -0.005]} rotation={[0, 0, 0.35]} castShadow>
+                <coneGeometry args={[0.008, 0.032, 8]} />
+                <meshStandardMaterial color={palette.hairAccent} roughness={0.5} />
+              </mesh>
+              <mesh position={[0.019, 0.032, -0.005]} rotation={[0, 0, -0.35]} castShadow>
+                <coneGeometry args={[0.008, 0.032, 8]} />
+                <meshStandardMaterial color={palette.hairAccent} roughness={0.5} />
+              </mesh>
+            </>
+          )}
+          {([-1, 1] as const).map((side) => (
+            <group key={side} position={[side * 0.011, 0.001, 0.027]}>
+              <mesh>
+                <sphereGeometry args={[0.0042, 8, 6]} />
+                <meshStandardMaterial color={palette.eyes} roughness={0.35} />
+              </mesh>
+              <mesh position={[-side * 0.001, 0.0014, 0.001]}>
+                <sphereGeometry args={[0.0013, 6, 4]} />
+                <meshBasicMaterial color="#F7F8FA" />
+              </mesh>
+            </group>
+          ))}
+        </group>
+      </group>
     </group>
   );
 }
-
-useGLTF.preload(VROID_MODEL_URLS.a);
-useGLTF.preload(VROID_MODEL_URLS.b);
