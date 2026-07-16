@@ -16,7 +16,7 @@ const models = [
   },
   {
     output: "public/models/blue_yeti_microphone.glb",
-    expectedGzipSha256: "20ee3aa50837c24792c77d55c17dc61f50a350789473794b4f39d55741b7d7c5",
+    expectedGzipSha256: "611242b6e17ee8706ddcf3980d265c481fd9ddbd3dd7213ab7fdb640c737f0e3",
     parts: ["assets/model-payloads/blue_yeti_microphone.glb.gz.b64.00"],
   },
 ];
