@@ -16,7 +16,21 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run production build
+        id: production-build
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
-          npm run build 2>&1 | tail -n 120
+          npm run build 2>&1 | tee build.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 1
+      - name: Check build result
+        if: always()
+        shell: bash
+        run: exit "${{ steps.production-build.outputs.exit_code }}"
