@@ -34,7 +34,7 @@ function KeyLight() {
         decay={1.6}
         color="#FFDDB4"
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         target={target}
       />
@@ -123,7 +123,8 @@ export default function PCScene({
       <Canvas
         shadows
         camera={{ position: POS_A.toArray(), fov: FOV }}
-        dpr={[1, 2]}
+        dpr={[0.75, 1.35]}
+        performance={{ min: 0.65, max: 1, debounce: 180 }}
         gl={{ antialias: true, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#0B0C0E"]} />
@@ -142,7 +143,17 @@ export default function PCScene({
           <ReadySignal onReady={onReady} />
         </Suspense>
 
-        <ContactShadows position={[-0.4, 0.002, 1.3]} opacity={0.55} scale={5} blur={2.4} far={1.8} />
+        {/* The room is static, so this expensive contact-shadow pass only needs
+            to render once instead of every animation frame. */}
+        <ContactShadows
+          position={[-0.4, 0.002, 1.3]}
+          opacity={0.5}
+          scale={5}
+          blur={2.2}
+          far={1.8}
+          frames={1}
+          resolution={512}
+        />
       </Canvas>
 
       <div className="absolute left-5 top-5 z-50 flex items-center gap-0.5 rounded-full border border-white/20 bg-ink/70 p-1 text-bone backdrop-blur">
