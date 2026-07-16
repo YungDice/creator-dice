@@ -2,7 +2,7 @@
 
 import { ContactShadows } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import type { PerspectiveCamera } from "three";
 import DeskSetup, { DESK_TOP_Y } from "@/components/three/DeskSetup";
@@ -12,11 +12,9 @@ import GamingRoom from "@/components/three/GamingRoom";
 import type { PCPhase } from "@/components/Experience";
 
 /**
- * Full-viewport 3D scene: a cozy pastel gaming corner — pink walls, poster
- * collage, white desk with a triple-monitor setup — with the real site
- * rendered live on the center screen. The camera starts behind the gaming
- * chair looking diagonally into the corner (matching the reference photo);
- * zooming in glides it to a head-on view of the center monitor.
+ * Full-viewport 3D scene: a cozy dark gaming corner with warm wood walls,
+ * a matching walnut desk and a triple-monitor workstation. The real site is
+ * rendered live on the center screen.
  */
 
 const FOV = 42;
@@ -53,6 +51,65 @@ function KeyLight() {
       />
       <primitive object={target} position={[0.3, 0.8, 0.4]} />
     </>
+  );
+}
+
+/**
+ * Applies the room-specific finish and spacing without coupling the reusable
+ * DeskSetup component to this particular environment.
+ */
+function Workstation({
+  phase,
+  screenContent,
+}: {
+  phase: PCPhase;
+  screenContent: ReactNode;
+}) {
+  const setup = useRef<THREE.Group>(null);
+
+  useLayoutEffect(() => {
+    const root = setup.current;
+    if (!root) return;
+
+    // Match the warm slatted wall/floor instead of using a bright white desk.
+    const deskParts = root.children.filter(
+      (child) =>
+        child instanceof THREE.Mesh &&
+        (Math.abs(child.position.x - 0.15) < 0.01 ||
+          Math.abs(child.position.x + 0.72) < 0.01 ||
+          Math.abs(child.position.x - 1.02) < 0.01),
+    ) as THREE.Mesh[];
+
+    deskParts.forEach((part) => {
+      const material = part.material;
+      if (!(material instanceof THREE.MeshStandardMaterial)) return;
+
+      const isTop = Math.abs(part.position.x - 0.15) < 0.01;
+      material.color.set(isTop ? "#6B3E25" : "#3A2117");
+      material.roughness = isTop ? 0.5 : 0.58;
+      material.metalness = 0;
+      material.needsUpdate = true;
+    });
+
+    // The right portrait monitor used to intersect the PC case. Move it into
+    // the clear space between the center display and the tower.
+    const rightMonitor = root.children.find(
+      (child) =>
+        child instanceof THREE.Group &&
+        Math.abs(child.position.x - 0.72) < 0.01 &&
+        Math.abs(child.position.y - DESK_TOP_Y) < 0.01,
+    );
+
+    if (rightMonitor) {
+      rightMonitor.position.set(0.54, DESK_TOP_Y, 0.12);
+      rightMonitor.rotation.y = -0.12;
+    }
+  }, []);
+
+  return (
+    <group ref={setup}>
+      <DeskSetup phase={phase} screenContent={screenContent} />
+    </group>
   );
 }
 
@@ -134,7 +191,7 @@ export default function PCScene({
 
         <Suspense fallback={null}>
           <GamingRoom />
-          <DeskSetup phase={phase} screenContent={screenContent} />
+          <Workstation phase={phase} screenContent={screenContent} />
           <GamingChair position={[-1.35, 0, 2.0]} rotationY={-0.42} />
           <DiceMastersCards position={[0.55, DESK_TOP_Y, 0.56]} scale={0.11} />
         </Suspense>
