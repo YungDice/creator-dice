@@ -5,19 +5,8 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-/**
- * Three poker cards (cut from the aces.jpg deck art) and a pair of 3D dice
- * laying on the desk left of the PC. The whole cluster is a link to the Dice
- * Masters site: an accent glow marks it as clickable, hovering fans the cards
- * open, lifts the cluster, shows a pointer cursor and a "Dice Masters"
- * tooltip, and clicking opens the site.
- */
-
 const DICE_MASTERS_URL = "https://dice-masters.yungdice.com";
 
-// ── Card art: cut single cards out of the 4×2 grid in aces.jpg ──
-// Source rects as fractions of the sheet; rendered onto their own canvas with
-// rounded corners and a transparent surround.
 function sliceCard(img: HTMLImageElement, col: number, row: number): THREE.CanvasTexture {
   const sx = (col * 0.25 + 0.006) * img.width;
   const sw = 0.238 * img.width;
@@ -39,23 +28,6 @@ function sliceCard(img: HTMLImageElement, col: number, row: number): THREE.Canva
   return tex;
 }
 
-function makeGlowTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = 256;
-  const g = canvas.getContext("2d")!;
-  const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  grad.addColorStop(0, "rgba(232,56,79,0.5)");
-  grad.addColorStop(0.6, "rgba(232,56,79,0.18)");
-  grad.addColorStop(1, "rgba(232,56,79,0)");
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 256, 256);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
-
-// ── Real 3D dice: rounded red cube + white pip discs per face ──
 const PIP_GRID: Record<number, [number, number][]> = {
   1: [[0, 0]],
   2: [[-1, -1], [1, 1]],
@@ -65,14 +37,13 @@ const PIP_GRID: Record<number, [number, number][]> = {
   6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]],
 };
 
-// Rotations orienting local +z toward each cube face.
 const FACE_ROTATIONS: [number, number, number][] = [
-  [0, 0, 0], // +z
-  [0, Math.PI, 0], // -z
-  [0, Math.PI / 2, 0], // +x
-  [0, -Math.PI / 2, 0], // -x
-  [-Math.PI / 2, 0, 0], // +y
-  [Math.PI / 2, 0, 0], // -y
+  [0, 0, 0],
+  [0, Math.PI, 0],
+  [0, Math.PI / 2, 0],
+  [0, -Math.PI / 2, 0],
+  [-Math.PI / 2, 0, 0],
+  [Math.PI / 2, 0, 0],
 ];
 
 function Die({
@@ -86,12 +57,11 @@ function Die({
   top: number;
   size?: number;
 }) {
-  // Opposite faces sum to 7; distribute the remaining pairs on the sides.
   const counts = useMemo(() => {
     const used = new Set([top, 7 - top]);
     const rest = [1, 2, 3, 4, 5, 6].filter((n) => !used.has(n) && n < 4);
     const [a, b] = [rest[0], rest[1] ?? 7 - rest[0]];
-    return [a, 7 - a, b, 7 - b, top, 7 - top]; // +z, -z, +x, -x, +y, -y
+    return [a, 7 - a, b, 7 - b, top, 7 - top];
   }, [top]);
 
   const off = size * 0.26;
@@ -116,20 +86,17 @@ function Die({
   );
 }
 
-// Cards from the sheet: [col, row] — A♥, A♠, 9♠
 const CARD_PICKS: [number, number][] = [
   [0, 1],
   [0, 0],
   [1, 0],
 ];
 
-// Resting fan, flat on the desk: [x, z, z-rotation, y-offset]
 const CARD_LAYOUT: [number, number, number, number][] = [
   [-0.55, 0.15, 0.4, 0.03],
   [0, 0, 0.05, 0.055],
   [0.55, 0.12, -0.32, 0.08],
 ];
-// Extra spread applied as the hover animation opens the fan.
 const FAN_DX = [-0.14, 0, 0.14];
 const FAN_ROT = [0.18, 0, -0.16];
 
@@ -151,7 +118,6 @@ export default function DiceMastersCards({
     () => CARD_PICKS.map(([c, r]) => sliceCard(acesSheet.image as HTMLImageElement, c, r)),
     [acesSheet],
   );
-  const glow = useMemo(makeGlowTexture, []);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? "pointer" : "";
@@ -161,15 +127,13 @@ export default function DiceMastersCards({
   }, [hovered]);
 
   useFrame((_, dt) => {
-    // Frame-rate independent ease toward the hover state.
     const k = 1 - Math.exp(-dt * 7);
     spread.current += ((hovered ? 1 : 0) - spread.current) * k;
     const s = spread.current;
 
     if (lift.current) {
       lift.current.position.y = s * 0.16;
-      const sc = 1 + s * 0.04;
-      lift.current.scale.setScalar(sc);
+      lift.current.scale.setScalar(1 + s * 0.04);
     }
     cardRefs.current.forEach((mesh, i) => {
       if (!mesh) return;
@@ -193,18 +157,12 @@ export default function DiceMastersCards({
       }}
       onPointerOut={() => setHovered(false)}
     >
-      {/* Accent glow on the desk — marks the cluster as clickable */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.15, 0.02, 0.25]}>
-        <planeGeometry args={[3.4, 3.4]} />
-        <meshBasicMaterial map={glow} transparent depthWrite={false} />
-      </mesh>
-
       <group ref={lift}>
         {CARD_LAYOUT.map(([x, z, rot, y], i) => (
           <mesh
             key={i}
-            ref={(m) => {
-              cardRefs.current[i] = m;
+            ref={(mesh) => {
+              cardRefs.current[i] = mesh;
             }}
             position={[x, y, z]}
             rotation={[-Math.PI / 2, 0, rot]}

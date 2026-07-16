@@ -43,6 +43,20 @@ function KeyLight() {
   );
 }
 
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  useEffect(() => {
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => onReady?.());
+    });
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, [onReady]);
+  return null;
+}
+
 function CameraRig({ zoom }: { zoom: number }) {
   const pointer = useRef({ x: 0, y: 0 });
   const look = useRef(LOOK_A.clone());
@@ -110,7 +124,7 @@ export default function PCScene({
         shadows
         camera={{ position: POS_A.toArray(), fov: FOV }}
         dpr={[1, 2]}
-        onCreated={() => onReady?.()}
+        gl={{ antialias: true, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#0B0C0E"]} />
         <fog attach="fog" args={["#0B0C0E", 4.5, 10]} />
@@ -125,6 +139,7 @@ export default function PCScene({
           <DeskSetup phase={phase} screenContent={screenContent} />
           <GamingChair position={[-1.35, 0, 2.0]} rotationY={-0.42} />
           <DiceMastersCards position={[0.55, DESK_TOP_Y, 0.56]} scale={0.11} />
+          <ReadySignal onReady={onReady} />
         </Suspense>
 
         <ContactShadows position={[-0.4, 0.002, 1.3]} opacity={0.55} scale={5} blur={2.4} far={1.8} />
