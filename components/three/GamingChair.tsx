@@ -109,10 +109,6 @@ export default function GamingChair({
         <RoundedBox args={[0.31, 0.14, 0.105]} radius={0.045} smoothness={4} position={[0, 0.42, 0.05]}>
           <meshStandardMaterial color="#20242A" roughness={0.58} />
         </RoundedBox>
-        <mesh position={[0, 0.42, 0.105]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.035, 0.005, 8, 24, Math.PI]} />
-          <meshStandardMaterial color="#E8384F" emissive="#E8384F" emissiveIntensity={0.35} />
-        </mesh>
 
         {/* Lumbar pillow. */}
         <RoundedBox args={[0.3, 0.18, 0.11]} radius={0.05} smoothness={4} position={[0, -0.22, 0.075]}>
