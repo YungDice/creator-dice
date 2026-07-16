@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Accent color as RGB channels — swap this one line to re-theme the site.
+     Dice red: 232 56 79 (#E8384F). Gold alternative: 212 175 55 (#D4AF37). */
+  --accent-rgb: 232 56 79;
+}
+
+html {
+  /* Keep anchor targets clear of the fixed nav. */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  @apply bg-ink font-body text-bone antialiased;
+}
+
+::selection {
+  background: rgb(var(--accent-rgb));
+  color: #f5f5f0;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--accent-rgb));
+  outline-offset: 3px;
+}
+
+/* Accent underline sweep for inline links. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  background: rgb(var(--accent-rgb));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-underline::after {
+    transition: none;
+  }
+}
+
+/* Minimal styling for native <audio> previews on release cards. */
+audio {
+  width: 100%;
+  height: 2rem;
+}
+
+/* ---- 3D PC experience ---- */
+
+/* Retro BIOS boot sequence shown on the computer's screen. */
+.boot-line {
+  opacity: 0;
+  animation: boot-appear 0.05s steps(1) forwards;
+}
+@keyframes boot-appear {
+  to {
+    opacity: 1;
+  }
+}
+.boot-cursor {
+  animation: boot-blink 0.9s steps(1) infinite;
+}
+@keyframes boot-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.boot-progress {
+  width: 0;
+  animation: boot-fill 1.1s steps(14) 1.9s forwards;
+}
+@keyframes boot-fill {
+  to {
+    width: 100%;
+  }
+}
+
+/* The site's scroll container when it lives inside the PC screen. */
+.pc-screen {
+  scroll-padding-top: 5.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 245, 240, 0.25) #0a0a0a;
+}
+.pc-screen::-webkit-scrollbar {
+  width: 8px;
+}
+.pc-screen::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+.pc-screen::-webkit-scrollbar-thumb {
+  background: rgba(245, 245, 240, 0.25);
+  border-radius: 4px;
+}

@@ -1,0 +1,19 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+.env*.local
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# local reference material (design reference video, not a site asset)
+original-2c5d72c0528e890a8e36bbdea6f93d9c.mp4
