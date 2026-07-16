@@ -5,6 +5,10 @@
 /.next/
 /out/
 
+# generated 3D model files (materialized from checked-in payloads)
+/public/models/sony_wh-1000xm5.glb
+/public/models/blue_yeti_microphone.glb
+
 # misc
 .DS_Store
 *.pem
