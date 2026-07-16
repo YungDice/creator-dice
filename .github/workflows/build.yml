@@ -15,4 +15,23 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Run production build
+        shell: bash
+        run: |
+          set +e
+          npm run build > build.log 2>&1
+          echo "$?" > build.status
+          exit 0
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-diagnostics-v3
+          path: |
+            build.log
+            build.status
+          retention-days: 1
+      - name: Check build result
+        if: always()
+        shell: bash
+        run: exit "$(cat build.status)"
