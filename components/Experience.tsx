@@ -27,26 +27,14 @@ function canRun3D(): boolean {
   }
 }
 
-function IntroLoader({ fading = false }: { fading?: boolean }) {
+function BlackLoader({ fading = false }: { fading?: boolean }) {
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#08090b] transition-opacity duration-[1400ms] ease-out ${
+      className={`fixed inset-0 z-[100] bg-black transition-opacity duration-[1200ms] ease-out ${
         fading ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
-      aria-hidden={fading}
-    >
-      <div className="flex w-56 flex-col items-center gap-5 text-bone">
-        <div className="font-display text-3xl font-black tracking-[-0.06em]">
-          YUNG DICE<span className="text-accent">.</span>
-        </div>
-        <div className="h-px w-full overflow-hidden bg-white/15">
-          <div className="h-full w-full origin-left animate-pulse bg-accent shadow-glow" />
-        </div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/45">
-          Entering the room
-        </p>
-      </div>
-    </div>
+      aria-hidden="true"
+    />
   );
 }
 
@@ -66,7 +54,6 @@ export default function Experience() {
     if (mode !== "3d") setSceneReady(false);
   }, [mode]);
 
-  // Boot sequence timers (restart whenever we enter 3D with the PC off).
   useEffect(() => {
     if (mode !== "3d" || phase === "on") return;
     const t1 = window.setTimeout(() => setPhase("boot"), phase === "off" ? OFF_MS : 0);
@@ -84,7 +71,7 @@ export default function Experience() {
     };
   }, [mode]);
 
-  if (mode === "deciding") return <IntroLoader />;
+  if (mode === "deciding") return <BlackLoader />;
 
   if (mode === "flat") {
     return (
@@ -111,25 +98,19 @@ export default function Experience() {
 
   return (
     <>
-      <div
-        className={`fixed inset-0 transition-opacity duration-[1400ms] ease-out ${
-          sceneReady ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <PCScene
-          phase={phase}
-          onReady={() => setSceneReady(true)}
-          screenContent={
-            phase === "on" ? (
-              <ScreenSite />
-            ) : (
-              <BootScreen phase={phase} onSkip={() => setPhase("on")} />
-            )
-          }
-        />
-      </div>
+      <PCScene
+        phase={phase}
+        onReady={() => setSceneReady(true)}
+        screenContent={
+          phase === "on" ? (
+            <ScreenSite />
+          ) : (
+            <BootScreen phase={phase} onSkip={() => setPhase("on")} />
+          )
+        }
+      />
 
-      <IntroLoader fading={sceneReady} />
+      <BlackLoader fading={sceneReady} />
 
       <button
         type="button"
