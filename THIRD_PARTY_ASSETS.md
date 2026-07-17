@@ -1,19 +1,7 @@
 # Third-party 3D assets
 
-## VRoid Studio sample models
+The current 3D room does not load external character models at runtime.
 
-The 3D room loads the following official VRoid Studio sample models as small shelf figurines:
+The shelf collectibles are original, lightweight anime-style figurines built directly from Three.js primitives in `components/three/VroidFigure.tsx`. This avoids large VRM downloads, skeleton cloning, extra textures, and expensive skinned-mesh rendering.
 
-- `AvatarSample_A.vrm`
-- `AvatarSample_B.vrm`
-
-Source mirror: `madjin/vrm-samples`, directory `vroid/stable`.
-
-Original conditions of use:
-
-- https://vroid.pixiv.help/hc/en-us/articles/4402394424089
-- https://vroid.pixiv.help/hc/en-us/articles/4402614652569
-
-The sample-model conditions permit use and alteration, including commercial use, subject to the published terms. Copyright is not waived. Do not sell or redistribute the original model files by themselves.
-
-The website loads the original model files from the public source URL at runtime and only uses them as decorative figurines in the rendered scene.
+The previous VRoid Studio sample models (`AvatarSample_A.vrm` and `AvatarSample_B.vrm`) are no longer loaded or distributed by this website.
