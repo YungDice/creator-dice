@@ -10,7 +10,7 @@ import {
   type Release,
   type ReleaseType,
 } from "@/data/discography";
-import { portfolioItems } from "@/data/portfolio";
+import { portfolioItems, type PortfolioItem } from "@/data/portfolio";
 import { EASE } from "@/lib/motion";
 
 type Filter = "all" | ReleaseType;
@@ -77,7 +77,6 @@ export default function Music() {
         </AnimatePresence>
       </ul>
 
-      {/* Non-music portfolio sub-grid */}
       <div id="work" className="mt-24 scroll-mt-24">
         <RevealGroup className="mb-12 max-w-2xl">
           <Eyebrow>Selected Work</Eyebrow>
@@ -85,36 +84,76 @@ export default function Music() {
             Beyond the music
           </RevealItem>
         </RevealGroup>
-        <RevealGroup as="ul" step={0.1} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup as="ul" step={0.1} className="grid gap-6 sm:grid-cols-2">
           {portfolioItems.map((item) => (
-            <RevealItem as="li" key={item.id}>
-              <motion.a
-                href={item.url}
-                whileHover={reduced ? undefined : { scale: 1.02 }}
-                className="group block overflow-hidden rounded-2xl border border-white/15 transition-all hover:border-accent hover:shadow-glow"
-              >
-                <Image
-                  src={item.image}
-                  alt={item.imageAlt}
-                  width={1600}
-                  height={900}
-                  className="aspect-video w-full object-cover"
-                />
-                <div className="flex items-baseline justify-between p-5">
-                  <div>
-                    <h3 className="font-display font-bold tracking-tight">{item.title}</h3>
-                    <p className="mt-1 text-xs uppercase tracking-[0.2em] text-bone/40">
-                      {item.category}
-                    </p>
-                  </div>
-                  <span className="text-sm text-bone/40">{item.year}</span>
-                </div>
-              </motion.a>
+            <RevealItem as="li" key={item.id} className="h-full">
+              <PortfolioCard item={item} />
             </RevealItem>
           ))}
         </RevealGroup>
       </div>
     </section>
+  );
+}
+
+function PortfolioCard({ item }: { item: PortfolioItem }) {
+  const reduced = useReducedMotion();
+  const cardClass =
+    "group block h-full overflow-hidden rounded-2xl border border-white/15 bg-white/[0.015] transition-all hover:border-accent hover:shadow-glow";
+
+  const content = (
+    <>
+      <div className="relative overflow-hidden">
+        <Image
+          src={item.image}
+          alt={item.imageAlt}
+          width={1600}
+          height={900}
+          className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+        />
+        {item.status && (
+          <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-ink/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-bone backdrop-blur">
+            {item.status}
+          </span>
+        )}
+      </div>
+      <div className="flex h-[calc(100%-auto)] flex-col p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-display text-xl font-bold tracking-tight">{item.title}</h3>
+            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-accent">{item.category}</p>
+          </div>
+          <span className="shrink-0 text-sm text-bone/40">{item.year}</span>
+        </div>
+        <p className="mt-4 text-sm leading-6 text-bone/55">{item.description}</p>
+        <div className="mt-5 text-sm font-medium text-bone/70">
+          {item.url ? "Visit project ↗" : "Project showcase"}
+        </div>
+      </div>
+    </>
+  );
+
+  if (item.url) {
+    return (
+      <motion.a
+        href={item.url}
+        target="_blank"
+        rel="noreferrer"
+        whileHover={reduced ? undefined : { scale: 1.015 }}
+        className={cardClass}
+      >
+        {content}
+      </motion.a>
+    );
+  }
+
+  return (
+    <motion.article
+      whileHover={reduced ? undefined : { scale: 1.015 }}
+      className={cardClass}
+    >
+      {content}
+    </motion.article>
   );
 }
 

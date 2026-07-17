@@ -1,9 +1,3 @@
-/**
- * {{PORTFOLIO_ITEMS}} — [PLACEHOLDER] Non-music work (videos, visuals, collabs).
- * Delete this section entirely (and its render in components/Music.tsx) if the
- * portfolio is music-only.
- */
-
 export type PortfolioItem = {
   id: string;
   title: string;
@@ -11,35 +5,33 @@ export type PortfolioItem = {
   year: number;
   image: string;
   imageAlt: string;
-  url: string;
+  description: string;
+  status?: string;
+  url?: string;
 };
 
 export const portfolioItems: PortfolioItem[] = [
   {
-    id: "work-01",
-    title: "Placeholder Music Video",
-    category: "Video",
+    id: "dice-masters",
+    title: "Dice Masters",
+    category: "Social Gaming Platform",
     year: 2026,
-    image: "/images/portfolio/work-01.svg",
-    imageAlt: "Placeholder still for a music video project",
-    url: "#",
+    image: "/images/portfolio/dice-masters.svg",
+    imageAlt: "Dice Masters virtual-currency social gaming platform",
+    description:
+      "A full-stack social gaming platform built around the virtual-only DICE currency. Players complete challenges, earn XP, wager DICE in casino-style games such as Dice, Coin Flip, Blackjack, Slots, Split-or-Steal and Poker, trade digital creations in a marketplace, connect with friends and compete on leaderboards. DICE cannot be exchanged for cash or crypto.",
+    status: "Live",
+    url: "https://dice-masters.yungdice.com",
   },
   {
-    id: "work-02",
-    title: "Placeholder Visual Pack",
-    category: "Visuals",
-    year: 2025,
-    image: "/images/portfolio/work-02.svg",
-    imageAlt: "Placeholder image for a visuals project",
-    url: "#",
-  },
-  {
-    id: "work-03",
-    title: "Placeholder Collab",
-    category: "Collaboration",
-    year: 2025,
-    image: "/images/portfolio/work-03.svg",
-    imageAlt: "Placeholder image for a collaboration project",
-    url: "#",
+    id: "ascendant",
+    title: "Ascendant",
+    category: "Portal Puzzle Game",
+    year: 2026,
+    image: "/images/portfolio/ascendant.svg",
+    imageAlt: "Ascendant portal puzzle game with linked glowing portals",
+    description:
+      "A first-person portal puzzle game focused on spatial reasoning, environmental traversal and interconnected chambers. Players create linked portals to redirect movement, reach impossible spaces and solve increasingly layered logic puzzles.",
+    status: "In development",
   },
 ];
