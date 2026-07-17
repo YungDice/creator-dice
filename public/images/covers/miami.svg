@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#2b1710"/><stop offset=".55" stop-color="#111014"/><stop offset="1" stop-color="#060608"/></linearGradient></defs>
+  <rect width="800" height="800" fill="url(#g)"/>
+  <circle cx="400" cy="300" r="145" fill="#e77b43" opacity=".9"/>
+  <path d="M0 390c130-60 250-40 400 10s270 60 400-10v410H0z" fill="#08090b"/>
+  <g stroke="#e77b43" stroke-width="8"><path d="M400 305v220"/><path d="M400 370c-70-30-105-75-115-135 65 5 105 45 115 135z" fill="#08090b"/><path d="M400 395c75-25 118-68 135-125-70 0-115 38-135 125z" fill="#08090b"/></g>
+  <text x="400" y="655" text-anchor="middle" fill="#fff3e8" font-family="Arial,sans-serif" font-size="130" font-weight="900" letter-spacing="16">MIAMI</text>
+  <text x="400" y="733" text-anchor="middle" fill="#e77b43" font-family="Arial,sans-serif" font-size="24" letter-spacing="9">YUNG DICE · 2021</text>
+</svg>

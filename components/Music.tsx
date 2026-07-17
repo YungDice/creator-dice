@@ -138,16 +138,27 @@ function ReleaseCard({ release }: { release: Release }) {
           <span className="shrink-0 text-sm text-bone/40">{release.year}</span>
         </div>
         <p className="mt-1 text-xs uppercase tracking-[0.25em] text-accent">{release.type}</p>
+        {release.details && <p className="mt-2 text-sm text-bone/50">{release.details}</p>}
         {release.previewSrc && (
           <audio controls preload="none" className="mt-4" src={release.previewSrc}>
             Your browser does not support audio previews.
           </audio>
         )}
         <div className="mt-4 flex gap-5 text-sm">
-          <a href={release.spotifyUrl} className="link-underline text-bone/60 hover:text-bone">
+          <a
+            href={release.spotifyUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="link-underline text-bone/60 hover:text-bone"
+          >
             Spotify
           </a>
-          <a href={release.appleMusicUrl} className="link-underline text-bone/60 hover:text-bone">
+          <a
+            href={release.appleMusicUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="link-underline text-bone/60 hover:text-bone"
+          >
             Apple Music
           </a>
         </div>
