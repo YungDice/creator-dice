@@ -8,6 +8,7 @@ import type { PerspectiveCamera } from "three";
 import DeskSetup, { DESK_TOP_Y } from "@/components/three/DeskSetup";
 import DiceMastersCards from "@/components/three/DiceMastersCards";
 import GamingChair from "@/components/three/GamingChair";
+import MusicGear from "@/components/three/MusicGear";
 import GamingRoom from "@/components/three/GamingRoom";
 import type { PCPhase } from "@/components/Experience";
 
@@ -139,6 +140,7 @@ export default function PCScene({
           <DeskSetup phase={phase} screenContent={screenContent} />
           <GamingChair position={[-1.35, 0, 2.0]} rotationY={-0.42} />
           <DiceMastersCards position={[0.55, DESK_TOP_Y, 0.56]} scale={0.11} />
+          <MusicGear interactive={phase === "on"} />
           <ReadySignal onReady={onReady} />
         </Suspense>
 

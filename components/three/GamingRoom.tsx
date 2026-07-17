@@ -3,7 +3,6 @@
 import { RoundedBox, useTexture } from "@react-three/drei";
 import { useMemo } from "react";
 import * as THREE from "three";
-import VroidFigure from "@/components/three/VroidFigure";
 import {
   coverTexture,
   makeDarkWallTexture,
@@ -31,7 +30,8 @@ const BACK_POSTERS: [number, number, number, number, number, number, boolean?][]
   [0.77, 2.08, 0.24, 0.34, 0.02, 12],
   [1.08, 2.3, 0.22, 0.31, -0.015, 13],
 ];
-const PHOTO_SLOTS = [0, 3, 6, 9, 12];
+/** Back-wall slots showing real poster photos (the rest get generated doodles). */
+const PHOTO_SLOTS = [0, 2, 3, 5, 6, 8, 9, 11, 12];
 
 const SIDE_POSTERS: [number, number, number, number, number, number][] = [
   [0.85, 2.3, 0.2, 0.28, -0.02, 22],
@@ -294,7 +294,7 @@ function TallShelf() {
       <Trophy position={[-0.2, 1.25, 0.02]} />
       <FlowerVase position={[0.19, 1.24, 0.015]} />
       <Books position={[-0.3, 1.65, 0.02]} count={5} scale={0.68} />
-      <VroidFigure model="a" position={[0.2, 1.64, 0.02]} rotationY={-0.18} pose="hero" scale={0.096} />
+      <Candle position={[0.2, 1.65, 0.02]} />
       <Plant position={[-0.18, 2.06, 0.02]} />
       <Candle position={[0.22, 2.06, 0.02]} />
     </group>
@@ -325,6 +325,12 @@ export default function GamingRoom() {
     "/images/posters/poster4.jpg",
     "/images/posters/poster5.jpg",
     "/images/posters/poster6.jpg",
+    "/images/posters/poster7.jpg",
+    "/images/posters/poster8.jpg",
+    "/images/posters/poster9.jpg",
+    "/images/posters/poster10.jpg",
+    "/images/posters/poster11.jpg",
+    "/images/posters/poster12.jpg",
   ]);
 
   const backPosterTex = useMemo(
@@ -337,7 +343,7 @@ export default function GamingRoom() {
     [photos],
   );
   const sidePosterTex = useMemo(
-    () => SIDE_POSTERS.map((poster, i) => (i === 0 ? coverTexture(photos[1], poster[2] / poster[3]) : makePosterTexture(poster[5]))),
+    () => SIDE_POSTERS.map((poster, i) => coverTexture(photos[9 + i], poster[2] / poster[3])),
     [photos],
   );
 
@@ -428,9 +434,9 @@ export default function GamingRoom() {
         </mesh>
         <pointLight position={[0, -0.12, 0.14]} intensity={0.72} distance={1.25} color={WARM} />
 
-        <VroidFigure model="b" position={[-0.53, 0.025, 0.015]} rotationY={0.14} pose="wave" scale={0.095} />
-        <VroidFigure model="a" position={[-0.28, 0.025, 0.015]} rotationY={-0.08} pose="relaxed" scale={0.1} />
-        <VroidFigure model="b" position={[-0.02, 0.025, 0.015]} rotationY={-0.2} pose="hero" scale={0.09} baseColor="#20181F" />
+        <Books position={[-0.6, 0.02, 0]} count={5} scale={0.62} />
+        <FlowerVase position={[-0.25, 0.025, 0.015]} />
+        <Trophy position={[-0.02, 0.025, 0.015]} />
         <Books position={[0.22, 0.02, 0]} count={6} scale={0.58} />
         <Gamepad position={[0.58, 0.055, 0.015]} />
       </group>

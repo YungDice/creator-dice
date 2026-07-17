@@ -20,8 +20,8 @@ export type SocialLink = {
 
 export const socialLinks: SocialLink[] = [
   { id: "instagram", label: "Instagram", url: "#" },
-  { id: "spotify", label: "Spotify", url: "#" },
-  { id: "appleMusic", label: "Apple Music", url: "#" },
+  { id: "spotify", label: "Spotify", url: "https://open.spotify.com/artist/1bzBDJgvpO6arfJCgHjpJJ?si=lP8gaEUURGaEtCMuVH2D-g" },
+  { id: "appleMusic", label: "Apple Music", url: "https://music.apple.com/ch/artist/yung-dice/1396099815" },
   { id: "youtube", label: "YouTube", url: "#" },
   { id: "tiktok", label: "TikTok", url: "#" },
   { id: "x", label: "X", url: "#" },
