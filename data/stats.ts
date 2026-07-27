@@ -1,6 +1,6 @@
 /**
- * {{STATS}} — [PLACEHOLDER] Quick-stat strip in the About section.
- * These numbers are sample values, NOT real figures. Replace before launch.
+ * Quick-stat strip in the About section. Counts reflect the catalog on
+ * Spotify/Apple Music as of mid-2026 — bump them as new releases drop.
  */
 
 export type Stat = {
@@ -9,8 +9,8 @@ export type Stat = {
 };
 
 export const stats: Stat[] = [
-  { value: "1M+", label: "Streams (sample)" },
-  { value: "5", label: "Years active (sample)" },
-  { value: "20+", label: "Releases (sample)" },
-  { value: "10+", label: "Placements (sample)" },
+  { value: "16+", label: "Releases" },
+  { value: "6", label: "Albums & EPs" },
+  { value: "5+", label: "Years active" },
+  { value: "3", label: "Genres crossed" },
 ];

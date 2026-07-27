@@ -28,10 +28,17 @@ export default function GamingChair({
               <cylinderGeometry args={[0.037, 0.037, 0.026, 18]} />
               <meshStandardMaterial color="#0E1013" roughness={0.5} />
             </mesh>
-            <mesh position={[0, 0.016, 0]}>
-              <cylinderGeometry args={[0.02, 0.02, 0.005, 16]} />
-              <meshStandardMaterial color={METAL} roughness={0.3} metalness={0.75} />
+            {/* Rubber tread ring around the caster. */}
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[0.03, 0.007, 8, 22]} />
+              <meshStandardMaterial color="#15171A" roughness={0.65} />
             </mesh>
+            {[-1, 1].map((cap) => (
+              <mesh key={cap} position={[0, cap * 0.016, 0]}>
+                <cylinderGeometry args={[0.02, 0.02, 0.005, 16]} />
+                <meshStandardMaterial color={METAL} roughness={0.3} metalness={0.75} />
+              </mesh>
+            ))}
           </group>
         </group>
       ))}
@@ -40,10 +47,30 @@ export default function GamingChair({
         <cylinderGeometry args={[0.03, 0.038, 0.3, 20]} />
         <meshStandardMaterial color={METAL} roughness={0.28} metalness={0.78} />
       </mesh>
+      {/* Telescopic gas-lift cover. */}
+      <mesh position={[0, 0.15, 0]}>
+        <cylinderGeometry args={[0.042, 0.048, 0.13, 20]} />
+        <meshStandardMaterial color="#0E1013" roughness={0.42} />
+      </mesh>
       <mesh position={[0, 0.37, 0]}>
         <cylinderGeometry args={[0.085, 0.1, 0.035, 24]} />
         <meshStandardMaterial color="#15181B" roughness={0.4} />
       </mesh>
+      {/* Tilt mechanism housing under the seat. */}
+      <RoundedBox args={[0.24, 0.045, 0.28]} radius={0.012} smoothness={2} position={[0, 0.4, 0.02]}>
+        <meshStandardMaterial color="#101215" roughness={0.45} metalness={0.3} />
+      </RoundedBox>
+      {/* Recline lever on the right side. */}
+      <group position={[0.24, 0.41, 0.16]}>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.007, 0.007, 0.09, 10]} />
+          <meshStandardMaterial color={METAL} roughness={0.3} metalness={0.7} />
+        </mesh>
+        <mesh position={[0.05, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.012, 0.012, 0.032, 12]} />
+          <meshStandardMaterial color="#0E1013" roughness={0.5} />
+        </mesh>
+      </group>
 
       {/* Thick dark seat with warm-brown side bolsters. */}
       <RoundedBox args={[0.52, 0.14, 0.52]} radius={0.05} smoothness={4} position={[0, 0.46, 0.02]} castShadow>
@@ -52,6 +79,13 @@ export default function GamingChair({
       <RoundedBox args={[0.34, 0.018, 0.36]} radius={0.025} smoothness={3} position={[0, 0.536, 0.025]}>
         <meshStandardMaterial color={LEATHER_DIM} roughness={0.6} />
       </RoundedBox>
+      {/* Stitch seams across the seat cushion front. */}
+      {[-0.11, 0, 0.11].map((x) => (
+        <mesh key={x} position={[x, 0.47, 0.281]}>
+          <boxGeometry args={[0.006, 0.05, 0.004]} />
+          <meshStandardMaterial color={SEAM} roughness={0.68} />
+        </mesh>
+      ))}
       {[-1, 1].map((s) => (
         <RoundedBox
           key={s}
@@ -106,9 +140,28 @@ export default function GamingChair({
           )),
         )}
 
+        {/* Embroidered diamond emblem below the headrest. */}
+        <group position={[0, 0.31, 0.079]}>
+          <mesh rotation={[0, 0, Math.PI / 4]}>
+            <planeGeometry args={[0.048, 0.048]} />
+            <meshStandardMaterial color={SEAM} roughness={0.55} />
+          </mesh>
+          <mesh position={[0, 0, 0.001]} rotation={[0, 0, Math.PI / 4]}>
+            <planeGeometry args={[0.034, 0.034]} />
+            <meshStandardMaterial color={LEATHER} roughness={0.55} />
+          </mesh>
+        </group>
+
         <RoundedBox args={[0.31, 0.14, 0.105]} radius={0.045} smoothness={4} position={[0, 0.42, 0.05]}>
           <meshStandardMaterial color="#20242A" roughness={0.58} />
         </RoundedBox>
+        {/* Headrest pillow straps over the backrest top. */}
+        {[-0.1, 0.1].map((x) => (
+          <mesh key={x} position={[x, 0.475, 0.01]} rotation={[0.12, 0, 0]}>
+            <boxGeometry args={[0.02, 0.013, 0.17]} />
+            <meshStandardMaterial color="#0B0D0F" roughness={0.6} />
+          </mesh>
+        ))}
 
         {/* Lumbar pillow. */}
         <RoundedBox args={[0.3, 0.18, 0.11]} radius={0.05} smoothness={4} position={[0, -0.22, 0.075]}>
@@ -129,6 +182,11 @@ export default function GamingChair({
           <mesh position={[0, 0.739, 0]}>
             <boxGeometry args={[0.06, 0.004, 0.22]} />
             <meshStandardMaterial color="#30343A" roughness={0.5} />
+          </mesh>
+          {/* Height-adjustment button on the outer face. */}
+          <mesh position={[s * 0.049, 0.705, 0.06]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.007, 0.007, 0.01, 10]} />
+            <meshStandardMaterial color="#30343A" roughness={0.4} />
           </mesh>
         </group>
       ))}

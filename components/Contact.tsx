@@ -21,7 +21,7 @@ export default function Contact() {
         <RevealItem as="li">
           <ConnectCard
             title="Booking"
-            body="[PLACEHOLDER] Shows, sets, and session work. One line on what booking requests should include."
+            body="Shows, sets and session work — requests go straight to management. Include your date, venue and budget and we'll get back to you."
             cta={{ label: "Email booking", href: `mailto:${site.bookingEmail}?subject=Booking%20inquiry` }}
           />
         </RevealItem>
@@ -34,7 +34,7 @@ export default function Contact() {
         <RevealItem as="li">
           <ConnectCard
             title="Press & Media"
-            body="[PLACEHOLDER] Interviews, features, and press assets. Link a press kit when one exists."
+            body="Interviews, features and press assets — reach out to management and we'll send over everything you need."
             cta={{ label: "Email press", href: `mailto:${site.bookingEmail}?subject=Press%20inquiry` }}
           />
         </RevealItem>

@@ -1,17 +1,15 @@
 /**
- * Global site copy. Everything marked [PLACEHOLDER] still needs real content —
- * see README.md § "Content you still need to supply".
+ * Global site copy.
  */
 
 export const site = {
   name: "YUNG DICE",
-  // {{HERO_TAGLINE}} — using the example line from the brief until confirmed.
   heroTagline: "Beats built on the roll of the dice",
   heroSub:
-    "[PLACEHOLDER] One or two sentences positioning Yung Dice — genre, city, what makes the sound his. Replace in data/site.ts.",
-  listenUrl: "#music", // [PLACEHOLDER] point at a real smart-link (e.g. Linkfire/Feature.fm) or Spotify artist page
+    "Rapper and producer running his own lane since 2021 — rap at the core, with detours into drum & bass and hardtekk. Every track, every cover, every world: built in-house.",
+  listenUrl: "https://open.spotify.com/artist/1bzBDJgvpO6arfJCgHjpJJ",
   bookingEmail: "mgmt.yungdice@gmail.com",
-  // "As heard on" trust strip in the hero. Swap for real platform/press names.
+  // "As heard on" trust strip in the hero.
   heardOn: ["Spotify", "Apple Music", "SoundCloud", "YouTube"],
 } as const;
 
@@ -23,11 +21,10 @@ export const navLinks = [
 ] as const;
 
 export const about = {
-  // {{BIO_TEXT}} — [PLACEHOLDER] real background, genre, story, influences.
   pullQuote: "Every track starts with a roll you can’t take back.",
   paragraphs: [
-    "[PLACEHOLDER BIO — paragraph 1] Who Yung Dice is: where he’s from, the genre he works in, and how he got started. This is stub copy so the layout reads correctly — no biographical facts have been invented. Replace in data/site.ts.",
-    "[PLACEHOLDER BIO — paragraph 2] The story and the influences: the sound he grew up on, what he’s building toward, and what a listener should expect from a Yung Dice record.",
+    "Yung Dice has been dropping records since 2021, starting with the early singles Darkness, Pow Pow and Miami and building toward full-length projects like SOUND OF DICE, DICE and myself. What began as straight rap keeps mutating — one release is a drum & bass hybrid (DiceNBass), the next is full-throttle hardtekk (MIMIMI), and collaborations like the ELIAS EP with filiusfetish push the sound somewhere new every time.",
+    "The dice aren’t just a name — they’re the method. Every release is a roll: a new genre, a new language, a new experiment, no take-backs. And the music is only half of it. Yung Dice designs and builds his own worlds around the sound, from the Dice Masters social gaming platform to the Ascendant puzzle game to the site you’re standing in right now.",
   ],
   portraits: [
     {

@@ -428,6 +428,57 @@ export function makePosterTexture(seed: number, landscape = false): THREE.Canvas
   return toTexture(canvas);
 }
 
+/** Round woven rug: concentric warm-toned rings with subtle fiber noise. */
+export function makeRugTexture(): THREE.CanvasTexture {
+  const size = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const g = canvas.getContext("2d")!;
+  const rnd = mulberry32(515);
+  const cx = size / 2;
+  const cy = size / 2;
+
+  g.fillStyle = "#241E1A";
+  g.fillRect(0, 0, size, size);
+
+  const rings = ["#2E2620", "#3A2C22", "#332822", "#4A3526", "#2A211C", "#8A5A36", "#3A2C22", "#2E2620"];
+  let r = size / 2;
+  let i = 0;
+  while (r > 8) {
+    const width = 10 + rnd() * 26;
+    g.strokeStyle = rings[i % rings.length];
+    g.lineWidth = width;
+    g.beginPath();
+    g.arc(cx, cy, r - width / 2, 0, Math.PI * 2);
+    g.stroke();
+    r -= width;
+    i++;
+  }
+
+  // Braided-fiber texture: short arc strokes at random radii.
+  g.lineCap = "round";
+  for (let s = 0; s < 900; s++) {
+    const rr = 10 + rnd() * (size / 2 - 12);
+    const a = rnd() * Math.PI * 2;
+    const arc = 0.02 + rnd() * 0.05;
+    g.strokeStyle = rnd() > 0.5 ? "rgba(255,220,180,0.05)" : "rgba(0,0,0,0.09)";
+    g.lineWidth = 1.5 + rnd() * 2.5;
+    g.beginPath();
+    g.arc(cx, cy, rr, a, a + arc);
+    g.stroke();
+  }
+
+  // Amber border band.
+  g.strokeStyle = "rgba(200,130,70,0.5)";
+  g.lineWidth = 5;
+  g.beginPath();
+  g.arc(cx, cy, size / 2 - 14, 0, Math.PI * 2);
+  g.stroke();
+
+  return toTexture(canvas);
+}
+
 /** Dark wood plank flooring. */
 export function makeDarkWoodTexture(): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");

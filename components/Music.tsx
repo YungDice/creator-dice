@@ -15,11 +15,17 @@ import { EASE } from "@/lib/motion";
 
 type Filter = "all" | ReleaseType;
 
+/** How many releases show before the "Show all" button expands the grid. */
+const COLLAPSED_COUNT = 9;
+
 export default function Music() {
   const [filter, setFilter] = useState<Filter>("all");
+  const [expanded, setExpanded] = useState(false);
   const reduced = useReducedMotion();
 
-  const visible = discography.filter((r) => filter === "all" || r.type === filter);
+  const filtered = discography.filter((r) => filter === "all" || r.type === filter);
+  const visible = expanded ? filtered : filtered.slice(0, COLLAPSED_COUNT);
+  const hiddenCount = filtered.length - visible.length;
 
   return (
     <section id="music" className="mx-auto max-w-6xl px-4 py-24 sm:px-6 md:py-32">
@@ -76,6 +82,18 @@ export default function Music() {
           ))}
         </AnimatePresence>
       </ul>
+
+      {(hiddenCount > 0 || expanded) && filtered.length > COLLAPSED_COUNT && (
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            className="rounded-full border border-white/25 px-8 py-3 text-sm font-semibold transition-all hover:border-accent hover:shadow-glow"
+          >
+            {expanded ? "Show less" : `Show all ${filtered.length} releases`}
+          </button>
+        </div>
+      )}
 
       <div id="work" className="mt-24 scroll-mt-24">
         <RevealGroup className="mb-12 max-w-2xl">

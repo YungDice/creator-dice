@@ -1,6 +1,6 @@
 "use client";
 
-import { RoundedBox, useTexture } from "@react-three/drei";
+import { Instance, Instances, RoundedBox, useTexture } from "@react-three/drei";
 import { useMemo } from "react";
 import * as THREE from "three";
 import {
@@ -8,6 +8,7 @@ import {
   makeDarkWallTexture,
   makeDarkWoodTexture,
   makePosterTexture,
+  makeRugTexture,
 } from "@/components/three/pastelArt";
 
 const RIGHT_WALL_X = 2.2;
@@ -59,6 +60,11 @@ function PosterMaterial({ tex }: { tex: THREE.Texture }) {
   );
 }
 
+const BOOK_COLORS = ["#433028", "#734533", "#263A46", "#555B68", "#846D4A", "#2D4A43", "#5C3A4A", "#3A4A5C"];
+/** Unit-height geometry with its origin at the base so per-instance Y-scale sets book height. */
+const bookGeometry = new THREE.BoxGeometry(0.028, 1, 0.09).translate(0, 0.5, 0);
+const pageGeometry = new THREE.BoxGeometry(0.018, 1, 0.002).translate(0, 0.5, 0);
+
 function Books({
   position,
   count = 6,
@@ -68,26 +74,64 @@ function Books({
   count?: number;
   scale?: number;
 }) {
-  const colors = ["#433028", "#734533", "#263A46", "#555B68", "#846D4A", "#2D4A43"];
+  const books = useMemo(
+    () =>
+      Array.from({ length: count }).map((_, i) => ({
+        x: i * 0.033,
+        tilt: ((i % 3) - 1) * 0.025,
+        height: 0.16 + (i % 2) * 0.018 + ((i * 7) % 3) * 0.006,
+        color: BOOK_COLORS[i % BOOK_COLORS.length],
+      })),
+    [count],
+  );
+
   return (
     <group position={position} scale={scale}>
-      {Array.from({ length: count }).map((_, i) => (
-        <group key={i} position={[i * 0.033, 0, 0]} rotation={[0, 0, (i % 3 - 1) * 0.025]}>
-          <RoundedBox
-            args={[0.028, 0.16 + (i % 2) * 0.018, 0.09]}
-            radius={0.003}
-            smoothness={2}
-            position={[0, 0.08, 0]}
-            castShadow
-          >
-            <meshStandardMaterial color={colors[i % colors.length]} roughness={0.72} />
-          </RoundedBox>
-          <mesh position={[0, 0.075, 0.046]}>
-            <boxGeometry args={[0.018, 0.105, 0.002]} />
-            <meshStandardMaterial color="#D0B98D" roughness={0.65} />
-          </mesh>
-        </group>
-      ))}
+      <Instances geometry={bookGeometry} limit={count} castShadow>
+        <meshStandardMaterial roughness={0.72} />
+        {books.map((book, i) => (
+          <Instance
+            key={i}
+            position={[book.x, 0, 0]}
+            rotation={[0, 0, book.tilt]}
+            scale={[1, book.height, 1]}
+            color={book.color}
+          />
+        ))}
+      </Instances>
+      <Instances geometry={pageGeometry} limit={count}>
+        <meshStandardMaterial color="#D0B98D" roughness={0.65} />
+        {books.map((book, i) => (
+          <Instance
+            key={i}
+            position={[book.x, 0.018, 0.046]}
+            rotation={[0, 0, book.tilt]}
+            scale={[1, book.height * 0.68, 1]}
+          />
+        ))}
+      </Instances>
+    </group>
+  );
+}
+
+const CASE_COLORS = ["#2C3A4E", "#4E2C34", "#31463A", "#3E3450", "#4A4230", "#26303A"];
+
+/** A row of slim game cases, the last one leaning against the rest. */
+function GameCases({ position, count = 5 }: { position: [number, number, number]; count?: number }) {
+  return (
+    <group position={position}>
+      <Instances limit={count} castShadow>
+        <boxGeometry args={[0.014, 0.17, 0.12]} />
+        <meshStandardMaterial roughness={0.55} />
+        {Array.from({ length: count }).map((_, i) => (
+          <Instance
+            key={i}
+            position={[i * 0.019 + (i === count - 1 ? 0.012 : 0), 0.085, 0]}
+            rotation={[0, 0, i === count - 1 ? -0.24 : 0]}
+            color={CASE_COLORS[i % CASE_COLORS.length]}
+          />
+        ))}
+      </Instances>
     </group>
   );
 }
@@ -294,6 +338,7 @@ function TallShelf() {
       <Trophy position={[-0.2, 1.25, 0.02]} />
       <FlowerVase position={[0.19, 1.24, 0.015]} />
       <Books position={[-0.3, 1.65, 0.02]} count={5} scale={0.68} />
+      <GameCases position={[-0.045, 1.65, 0.02]} count={4} />
       <Candle position={[0.2, 1.65, 0.02]} />
       <Plant position={[-0.18, 2.06, 0.02]} />
       <Candle position={[0.22, 2.06, 0.02]} />
@@ -317,6 +362,7 @@ export default function GamingRoom() {
     texture.repeat.set(3.5, 1.36);
     return texture;
   }, []);
+  const rugTex = useMemo(() => makeRugTexture(), []);
 
   const photos = useTexture([
     "/images/posters/poster1.jpg",
@@ -372,6 +418,12 @@ export default function GamingRoom() {
         <meshStandardMaterial map={floorTex} roughness={0.6} />
       </mesh>
 
+      {/* Woven rug under the chair area. */}
+      <mesh position={[-1.15, 0.006, 2.15]} rotation={[-Math.PI / 2, 0, 0.4]} receiveShadow>
+        <circleGeometry args={[1.05, 48]} />
+        <meshStandardMaterial map={rugTex} roughness={0.95} />
+      </mesh>
+
       <mesh position={[(ROOM_LEFT + RIGHT_WALL_X) / 2, 0.045, 0.008]}>
         <boxGeometry args={[RIGHT_WALL_X - ROOM_LEFT, 0.09, 0.014]} />
         <meshStandardMaterial color="#232427" roughness={0.6} />
@@ -386,12 +438,13 @@ export default function GamingRoom() {
           <boxGeometry args={[SLAT_MAX_X - SLAT_MIN_X + 0.45, CEILING_Y, 0.02]} />
           <meshStandardMaterial color="#141518" roughness={0.9} />
         </mesh>
-        {slats.map((x, i) => (
-          <mesh key={i} position={[x, CEILING_Y / 2, 0.032]} receiveShadow>
-            <boxGeometry args={[0.062, CEILING_Y, 0.03]} />
-            <meshStandardMaterial color={SLAT_TONES[i % 3]} roughness={0.55} />
-          </mesh>
-        ))}
+        <Instances limit={slats.length} receiveShadow>
+          <boxGeometry args={[0.062, CEILING_Y, 0.03]} />
+          <meshStandardMaterial roughness={0.55} />
+          {slats.map((x, i) => (
+            <Instance key={i} position={[x, CEILING_Y / 2, 0.032]} color={SLAT_TONES[i % 3]} />
+          ))}
+        </Instances>
         {[SLAT_MIN_X - 0.13, SLAT_MAX_X + 0.13].map((x) => (
           <group key={x}>
             <mesh position={[x, 1.42, 0.028]}>

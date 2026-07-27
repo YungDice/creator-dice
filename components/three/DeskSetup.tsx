@@ -1,9 +1,10 @@
 "use client";
 
-import { Html, RoundedBox, Text, useTexture } from "@react-three/drei";
+import { Html, Instance, Instances, RoundedBox, Text, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, type ReactNode } from "react";
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three-stdlib";
 import { coverTexture } from "@/components/three/pastelArt";
 import type { PCPhase } from "@/components/Experience";
 
@@ -162,23 +163,28 @@ function SpinningFan({
         <meshStandardMaterial color="#090C10" roughness={0.26} />
       </mesh>
       <group ref={blades}>
-        {Array.from({ length: 9 }).map((_, i) => {
-          const a = (i * Math.PI * 2) / 9;
-          return (
-            <mesh
-              key={i}
-              position={[Math.cos(a) * radius * 0.42, Math.sin(a) * radius * 0.42, 0.004]}
-              rotation={[0, 0, a + 0.6]}
-            >
-              <boxGeometry args={[radius * 0.18, radius * 0.72, 0.007]} />
-              <meshStandardMaterial color="#27323A" emissive={glow} emissiveIntensity={0.35} toneMapped={false} />
-            </mesh>
-          );
-        })}
+        <Instances limit={11}>
+          <boxGeometry args={[radius * 0.15, radius * 0.72, 0.007]} />
+          <meshStandardMaterial color="#27323A" emissive={glow} emissiveIntensity={0.35} toneMapped={false} />
+          {Array.from({ length: 11 }).map((_, i) => {
+            const a = (i * Math.PI * 2) / 11;
+            return (
+              <Instance
+                key={i}
+                position={[Math.cos(a) * radius * 0.42, Math.sin(a) * radius * 0.42, 0.004]}
+                rotation={[0, 0, a + 0.6]}
+              />
+            );
+          })}
+        </Instances>
       </group>
       <mesh position={[0, 0, 0.009]}>
         <cylinderGeometry args={[radius * 0.2, radius * 0.2, 0.012, 20]} />
         <meshStandardMaterial color="#AAB1B7" roughness={0.22} metalness={0.7} />
+      </mesh>
+      <mesh position={[0, 0, 0.016]}>
+        <torusGeometry args={[radius * 0.13, radius * 0.028, 8, 20]} />
+        <meshStandardMaterial color={glow} emissive={glow} emissiveIntensity={0.7} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -197,18 +203,23 @@ function VentPanel({
   cols?: number;
   spacing?: number;
 }) {
+  const holes = useMemo(() => {
+    const out: [number, number][] = [];
+    for (let i = 0; i < rows * cols; i++) {
+      out.push([((i % cols) - (cols - 1) / 2) * spacing, (Math.floor(i / cols) - (rows - 1) / 2) * spacing]);
+    }
+    return out;
+  }, [rows, cols, spacing]);
+
   return (
     <group position={position} rotation={rotation}>
-      {Array.from({ length: rows * cols }).map((_, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        return (
-          <mesh key={i} position={[(col - (cols - 1) / 2) * spacing, (row - (rows - 1) / 2) * spacing, 0]}>
-            <circleGeometry args={[0.004, 12]} />
-            <meshStandardMaterial color="#06080A" roughness={0.35} />
-          </mesh>
-        );
-      })}
+      <Instances limit={holes.length}>
+        <circleGeometry args={[0.004, 10]} />
+        <meshStandardMaterial color="#06080A" roughness={0.35} />
+        {holes.map(([x, y], i) => (
+          <Instance key={i} position={[x, y, 0]} />
+        ))}
+      </Instances>
     </group>
   );
 }
@@ -352,6 +363,40 @@ function PCTower() {
 
         <GPU5080 />
 
+        {/* Chipset heatsink with cooling fins on the lower motherboard. */}
+        <group position={[0.096, -0.03, 0.06]}>
+          <RoundedBox args={[0.008, 0.055, 0.055]} radius={0.002} smoothness={2}>
+            <meshStandardMaterial color="#2A3138" roughness={0.3} metalness={0.7} />
+          </RoundedBox>
+          <Instances limit={6}>
+            <boxGeometry args={[0.014, 0.05, 0.0035]} />
+            <meshStandardMaterial color="#3A424B" roughness={0.25} metalness={0.8} />
+            {[-0.021, -0.0126, -0.0042, 0.0042, 0.0126, 0.021].map((z) => (
+              <Instance key={z} position={[-0.007, 0, z]} />
+            ))}
+          </Instances>
+        </group>
+
+        {/* Ribbed AIO coolant tubes running from the pump block to the top radiator. */}
+        <Cable
+          points={[
+            [0.03, 0.135, -0.1],
+            [0.02, 0.2, -0.125],
+            [-0.02, 0.235, -0.095],
+          ]}
+          color="#101317"
+          tube={0.008}
+        />
+        <Cable
+          points={[
+            [0.045, 0.135, -0.065],
+            [0.052, 0.205, -0.095],
+            [0.0, 0.238, -0.062],
+          ]}
+          color="#101317"
+          tube={0.008}
+        />
+
         <Cable
           points={[
             [0.02, 0.14, -0.08],
@@ -448,34 +493,50 @@ function PCTower() {
 function Keyboard() {
   const rows = 4;
   const cols = 13;
+  const keycapGeom = useMemo(() => new RoundedBoxGeometry(0.021, 0.01, 0.021, 2, 0.0028), []);
+  const { plainKeys, accentKeys } = useMemo(() => {
+    const plain: { position: [number, number, number]; color: string }[] = [];
+    const accent: [number, number, number][] = [];
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        // Slight per-row ramp gives the keys a real typing-angle profile.
+        const position: [number, number, number] = [
+          -0.147 + col * 0.0245,
+          0.0305 + (rows - 1 - row) * 0.0011,
+          -0.041 + row * 0.0245,
+        ];
+        if ((col * 7 + row * 3) % 11 === 0) accent.push(position);
+        else plain.push({ position, color: row % 2 === 0 ? "#33302B" : "#282B30" });
+      }
+    }
+    return { plainKeys: plain, accentKeys: accent };
+  }, []);
+
   return (
-    <group position={[-0.14, DESK_TOP_Y, 0.5]} rotation={[0, 0.02, 0]}>
+    <group position={[-0.14, DESK_TOP_Y + 0.006, 0.5]} rotation={[0, 0.02, 0]}>
       <RoundedBox args={[0.34, 0.028, 0.125]} radius={0.01} smoothness={3} position={[0, 0.014, 0]} castShadow>
         <meshStandardMaterial color="#1C1E22" roughness={0.38} metalness={0.25} />
       </RoundedBox>
-      {Array.from({ length: rows * cols }).map((_, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const accent = (col * 7 + row * 3) % 11 === 0;
-        return (
-          <RoundedBox
-            key={i}
-            args={[0.021, 0.01, 0.021]}
-            radius={0.0028}
-            smoothness={2}
-            position={[-0.147 + col * 0.0245, 0.031, -0.041 + row * 0.0245]}
-          >
-            {accent ? (
-              <meshStandardMaterial color="#E6A263" emissive="#D9823D" emissiveIntensity={0.3} roughness={0.42} toneMapped={false} />
-            ) : (
-              <meshStandardMaterial color={row % 2 === 0 ? "#33302B" : "#282B30"} roughness={0.5} />
-            )}
-          </RoundedBox>
-        );
-      })}
-      <RoundedBox args={[0.12, 0.01, 0.021]} radius={0.0028} smoothness={2} position={[-0.02, 0.031, 0.051]}>
+      <Instances geometry={keycapGeom} limit={plainKeys.length}>
+        <meshStandardMaterial roughness={0.5} />
+        {plainKeys.map((key, i) => (
+          <Instance key={i} position={key.position} color={key.color} />
+        ))}
+      </Instances>
+      <Instances geometry={keycapGeom} limit={Math.max(accentKeys.length, 1)}>
+        <meshStandardMaterial color="#E6A263" emissive="#D9823D" emissiveIntensity={0.3} roughness={0.42} toneMapped={false} />
+        {accentKeys.map((position, i) => (
+          <Instance key={i} position={position} />
+        ))}
+      </Instances>
+      <RoundedBox args={[0.12, 0.01, 0.021]} radius={0.0028} smoothness={2} position={[-0.02, 0.0305, 0.051]}>
         <meshStandardMaterial color="#33302B" roughness={0.5} />
       </RoundedBox>
+      {/* Volume knob on the top-right corner. */}
+      <mesh position={[0.152, 0.034, -0.048]}>
+        <cylinderGeometry args={[0.008, 0.008, 0.014, 14]} />
+        <meshStandardMaterial color="#8B939A" roughness={0.24} metalness={0.8} />
+      </mesh>
       {/* Faint warm underglow, matching the desk's LED strip. */}
       <mesh position={[0, 0.004, 0.064]}>
         <boxGeometry args={[0.32, 0.004, 0.003]} />
@@ -489,7 +550,7 @@ const DECK_COLORS = ["#70D4FF", "#E75B70", "#9BE3B4", "#FFD18A", "#BDA9E8", "#74
 
 function ControlDeck() {
   return (
-    <group position={[0.17, DESK_TOP_Y + 0.016, 0.41]} rotation={[0, 0.08, 0]}>
+    <group position={[0.17, DESK_TOP_Y + 0.022, 0.41]} rotation={[0, 0.08, 0]}>
       <RoundedBox args={[0.105, 0.026, 0.075]} radius={0.006} smoothness={2} castShadow>
         <meshStandardMaterial color="#171A1F" roughness={0.32} metalness={0.35} />
       </RoundedBox>
@@ -533,6 +594,120 @@ function CableGrommet({ position }: { position: [number, number, number] }) {
         <circleGeometry args={[0.018, 24]} />
         <meshStandardMaterial color="#08090B" roughness={0.55} />
       </mesh>
+    </group>
+  );
+}
+
+function DeskMat() {
+  return (
+    <group position={[0.02, DESK_TOP_Y, 0.47]}>
+      <RoundedBox args={[0.78, 0.006, 0.32]} radius={0.003} smoothness={2} position={[0, 0.003, 0]} receiveShadow>
+        <meshStandardMaterial color="#141619" roughness={0.9} />
+      </RoundedBox>
+      <mesh position={[0, 0.0065, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.75, 0.29]} />
+        <meshStandardMaterial color="#1A1D21" roughness={0.85} />
+      </mesh>
+      {/* Small amber logo mark in the corner. */}
+      <mesh position={[0.345, 0.0068, 0.115]} rotation={[-Math.PI / 2, 0, Math.PI / 4]}>
+        <planeGeometry args={[0.016, 0.016]} />
+        <meshStandardMaterial color="#E6A263" emissive="#D9823D" emissiveIntensity={0.35} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function CoffeeMug({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.004, 0]}>
+        <cylinderGeometry args={[0.05, 0.05, 0.008, 18]} />
+        <meshStandardMaterial color="#4A2C20" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.052, 0]} castShadow>
+        <cylinderGeometry args={[0.036, 0.031, 0.088, 20, 1, true]} />
+        <meshStandardMaterial color="#C8B49A" roughness={0.42} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, 0.01, 0]}>
+        <cylinderGeometry args={[0.031, 0.031, 0.004, 20]} />
+        <meshStandardMaterial color="#C8B49A" roughness={0.42} />
+      </mesh>
+      <mesh position={[0, 0.086, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.033, 20]} />
+        <meshStandardMaterial color="#2A1A10" roughness={0.28} />
+      </mesh>
+      <mesh position={[0.043, 0.055, 0]}>
+        <torusGeometry args={[0.019, 0.005, 8, 18]} />
+        <meshStandardMaterial color="#C8B49A" roughness={0.42} />
+      </mesh>
+    </group>
+  );
+}
+
+function Speaker({ position, rotationY }: { position: [number, number, number]; rotationY: number }) {
+  return (
+    <group position={position} rotation={[0, rotationY, 0]}>
+      <RoundedBox args={[0.085, 0.13, 0.09]} radius={0.008} smoothness={2} position={[0, 0.065, 0]} castShadow>
+        <meshStandardMaterial color="#15171B" roughness={0.55} />
+      </RoundedBox>
+      <mesh position={[0, 0.042, 0.046]}>
+        <circleGeometry args={[0.026, 20]} />
+        <meshStandardMaterial color="#0A0C0E" roughness={0.8} />
+      </mesh>
+      <mesh position={[0, 0.042, 0.047]}>
+        <torusGeometry args={[0.026, 0.0028, 8, 20]} />
+        <meshStandardMaterial color="#33383E" roughness={0.4} metalness={0.3} />
+      </mesh>
+      <mesh position={[0, 0.042, 0.0475]}>
+        <circleGeometry args={[0.009, 12]} />
+        <meshStandardMaterial color="#4A2C20" roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.1, 0.046]}>
+        <circleGeometry args={[0.012, 14]} />
+        <meshStandardMaterial color="#101215" roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 0.1, 0.047]}>
+        <torusGeometry args={[0.012, 0.002, 6, 16]} />
+        <meshStandardMaterial color="#33383E" roughness={0.4} metalness={0.3} />
+      </mesh>
+      <mesh position={[0.028, 0.012, 0.046]}>
+        <circleGeometry args={[0.0028, 8]} />
+        <meshStandardMaterial color="#FFD9A8" emissive="#FFA85C" emissiveIntensity={1.2} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+const STICKY_NOTES: [number, number, number, string][] = [
+  [-0.56, 0.36, 0.28, "#F1D28B"],
+  [-0.51, 0.42, -0.4, "#EFA3B6"],
+  [-0.545, 0.47, 0.12, "#A6DC7E"],
+];
+
+function DeskClutter() {
+  return (
+    <group>
+      {STICKY_NOTES.map(([x, z, rot, color], i) => (
+        <mesh key={i} position={[x, DESK_TOP_Y + 0.0015 + i * 0.0004, z]} rotation={[-Math.PI / 2, 0, rot]}>
+          <planeGeometry args={[0.045, 0.045]} />
+          <meshStandardMaterial color={color} roughness={0.85} />
+        </mesh>
+      ))}
+      {/* Pen resting beside the notes. */}
+      <group position={[-0.5, DESK_TOP_Y + 0.004, 0.49]} rotation={[0, 0.9, 0]}>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.0032, 0.0032, 0.11, 10]} />
+          <meshStandardMaterial color="#1A1C20" roughness={0.35} />
+        </mesh>
+        <mesh position={[0.062, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
+          <coneGeometry args={[0.0032, 0.014, 10]} />
+          <meshStandardMaterial color="#B17846" roughness={0.28} metalness={0.7} />
+        </mesh>
+        <mesh position={[-0.03, 0.0032, 0]}>
+          <boxGeometry args={[0.03, 0.0016, 0.004]} />
+          <meshStandardMaterial color="#8B939A" roughness={0.3} metalness={0.6} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -585,9 +760,14 @@ export default function DeskSetup({ phase, screenContent }: { phase: PCPhase; sc
       <ArtMonitor position={[0.53, DESK_TOP_Y, 0.12]} rotationY={-0.08} w={0.28} h={0.5} art={rightArt} standHeight={0.14} />
 
       <PCTower />
+      <DeskMat />
       <Keyboard />
+      <CoffeeMug position={[-0.44, DESK_TOP_Y, 0.55]} />
+      <Speaker position={[-0.44, DESK_TOP_Y, 0.07]} rotationY={0.28} />
+      <Speaker position={[0.355, DESK_TOP_Y, 0.04]} rotationY={-0.2} />
+      <DeskClutter />
 
-      <group position={[0.27, DESK_TOP_Y, 0.53]} rotation={[0, -0.15, 0]}>
+      <group position={[0.27, DESK_TOP_Y + 0.006, 0.53]} rotation={[0, -0.15, 0]}>
         <RoundedBox args={[0.055, 0.03, 0.09]} radius={0.013} smoothness={3} position={[0, 0.015, 0]} castShadow>
           <meshStandardMaterial color="#24262B" roughness={0.34} metalness={0.2} />
         </RoundedBox>

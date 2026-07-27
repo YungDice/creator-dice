@@ -64,61 +64,10 @@ export function TikTokIcon({ className }: IconProps) {
   );
 }
 
-export function XIcon({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" {...base}>
-      <path d="M5 4.5l14 15" />
-      <path d="M19 4.5l-14 15" />
-    </svg>
-  );
-}
-
 export const socialIcons: Record<SocialId, (props: IconProps) => JSX.Element> = {
   instagram: InstagramIcon,
   spotify: SpotifyIcon,
   appleMusic: AppleMusicIcon,
   youtube: YouTubeIcon,
   tiktok: TikTokIcon,
-  x: XIcon,
 };
-
-/** Minimal icons for the Process section steps. */
-export function ProcessIcon({
-  name,
-  className,
-}: IconProps & { name: "pen" | "mic" | "sliders" | "broadcast" }) {
-  switch (name) {
-    case "pen":
-      return (
-        <svg viewBox="0 0 24 24" className={className} aria-hidden="true" {...base}>
-          <path d="M4 20l1.2-4.2L16.4 4.6a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8z" />
-          <path d="M14.5 6.5l3 3" />
-        </svg>
-      );
-    case "mic":
-      return (
-        <svg viewBox="0 0 24 24" className={className} aria-hidden="true" {...base}>
-          <rect x="9" y="3" width="6" height="11" rx="3" />
-          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" />
-          <path d="M12 18v3" />
-        </svg>
-      );
-    case "sliders":
-      return (
-        <svg viewBox="0 0 24 24" className={className} aria-hidden="true" {...base}>
-          <path d="M6 4v10M6 18v2M12 4v3M12 11v9M18 4v14M18 20v0" />
-          <circle cx="6" cy="16" r="2" />
-          <circle cx="12" cy="9" r="2" />
-          <circle cx="18" cy="18" r="2" />
-        </svg>
-      );
-    case "broadcast":
-      return (
-        <svg viewBox="0 0 24 24" className={className} aria-hidden="true" {...base}>
-          <circle cx="12" cy="12" r="2.2" />
-          <path d="M7.8 16.2a6 6 0 0 1 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4" />
-          <path d="M5 19a10 10 0 0 1 0-14M19 5a10 10 0 0 1 0 14" />
-        </svg>
-      );
-  }
-}

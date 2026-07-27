@@ -1,7 +1,6 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Process from "@/components/Process";
 import Music from "@/components/Music";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -17,7 +16,6 @@ export default function SiteContent() {
       <main id="main">
         <Hero />
         <About />
-        <Process />
         <Music />
         <Contact />
       </main>
