@@ -4,8 +4,8 @@
 
 :root {
   /* Accent color as RGB channels — swap this one line to re-theme the site.
-     Dice red: 232 56 79 (#E8384F). Gold alternative: 212 175 55 (#D4AF37). */
-  --accent-rgb: 232 56 79;
+     Iris violet (current): 146 129 247 (#9281F7). */
+  --accent-rgb: 146 129 247;
 }
 
 html {
@@ -25,7 +25,7 @@ body {
 
 ::selection {
   background: rgb(var(--accent-rgb));
-  color: #f5f5f0;
+  color: #000000;
 }
 
 :focus-visible {
@@ -33,7 +33,7 @@ body {
   outline-offset: 3px;
 }
 
-/* Accent underline sweep for inline links. */
+/* Bone-white underline sweep for inline links — hairline, not accent-colored. */
 .link-underline {
   position: relative;
 }
@@ -42,12 +42,12 @@ body {
   position: absolute;
   left: 0;
   bottom: -3px;
-  height: 2px;
+  height: 1px;
   width: 100%;
-  background: rgb(var(--accent-rgb));
+  background: #f0f0f0;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.3s ease;
+  transition: transform 0.15s ease-out;
 }
 .link-underline:hover::after,
 .link-underline:focus-visible::after {
@@ -100,15 +100,15 @@ audio {
 .pc-screen {
   scroll-padding-top: 5.5rem;
   scrollbar-width: thin;
-  scrollbar-color: rgba(245, 245, 240, 0.25) #0a0a0a;
+  scrollbar-color: #292d30 #000000;
 }
 .pc-screen::-webkit-scrollbar {
   width: 8px;
 }
 .pc-screen::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #000000;
 }
 .pc-screen::-webkit-scrollbar-thumb {
-  background: rgba(245, 245, 240, 0.25);
+  background: #292d30;
   border-radius: 4px;
 }

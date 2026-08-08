@@ -27,6 +27,17 @@ const spotifySearch = (release: string) =>
 
 /** Newest first. Links verified against the artist's Spotify and Apple Music pages. */
 export const discography: Release[] = [
+    {
+    id: "little-things",
+    title: "Little Things",
+    year: 2026,
+    type: "single",
+    details: "1-track single · 07 August 2026",
+    cover: "/images/covers/littlethings.jpg",
+    coverAlt: "Little Things by Yung Dice featuring kef",
+    spotifyUrl: "https://open.spotify.com/album/0YY7ahauFgC01n9LPeB9kF?si=Tai7H_lbRFembVldm3nmJA",
+    appleMusicUrl: "https://music.apple.com/ch/album/little-things-feat-kef-single/6798665485",
+  },
   {
     id: "dicenbass",
     title: "DiceNBass",
@@ -108,9 +119,9 @@ export const discography: Release[] = [
     year: 2026,
     type: "album",
     details: "4-track EP · with filiusfetish",
-    cover: "/images/covers/elias.svg",
+    cover: "/images/covers/elias.jpg",
     coverAlt: "ELIAS EP by filiusfetish & Yung Dice",
-    spotifyUrl: "https://open.spotify.com/album/1Ro2UReH7hc0e1Btv9zVQt",
+    spotifyUrl: "https://open.spotify.com/album/1Ro2UReH7hc0e1Btv9zVQt?si=x1-PQuuCS56-rcnfDc_Eig",
     appleMusicUrl: "https://music.apple.com/ch/album/elias-ep/1890287222",
   },
   {
@@ -136,18 +147,6 @@ export const discography: Release[] = [
     appleMusicUrl: "https://music.apple.com/ch/album/dice/1857636722",
   },
   {
-    id: "ride-with-me",
-    title: "Ride With Me",
-    year: 2024,
-    type: "feature",
-    details: "Veezy MH feat. Yung Dice",
-    cover: "/images/covers/cover-01.svg",
-    coverAlt: "Ride With Me by Veezy MH featuring Yung Dice",
-    spotifyUrl: spotifySearch("Ride With Me Veezy MH"),
-    appleMusicUrl:
-      "https://music.apple.com/ch/album/ride-with-me-feat-yung-dice-single/1724490813",
-  },
-  {
     id: "tell-me-your-name",
     title: "Tell Me Your Name",
     year: 2023,
@@ -167,6 +166,18 @@ export const discography: Release[] = [
     coverAlt: "SOUND OF DICE by Yung Dice",
     spotifyUrl: "https://open.spotify.com/album/65ZJYPFvzTrEZKvkdZMgwW",
     appleMusicUrl: "https://music.apple.com/ch/album/sound-of-dice/1895839275",
+  },
+    {
+    id: "no-broke-music",
+    title: "NO BROKE MUSIC",
+    year: 2022,
+    type: "single",
+    details: "Yung Dice feat. ttt999ttt",
+    cover: "/images/covers/nobrokemusic.jpg",
+    coverAlt: "NO BROKE MUSIC by Yung Dice featuring ttt999ttt",
+    spotifyUrl: "https://open.spotify.com/album/52RZKL6x6AhiaKtHQA2kIg?si=zUmPiXpRSwqNyWvqEU-6Og",
+    appleMusicUrl:
+      "https://music.apple.com/ch/album/no-broke-music-feat-ttt999ttt-single/6798648921",
   },
   {
     id: "miami",

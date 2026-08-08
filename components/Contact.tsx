@@ -9,10 +9,10 @@ import { socialLinks } from "@/data/socials";
 
 export default function Contact() {
   return (
-    <section id="contact" className="mx-auto max-w-6xl px-4 py-24 sm:px-6 md:py-32">
+    <section id="contact" className="mx-auto max-w-[1200px] px-4 py-24 sm:px-6">
       <RevealGroup className="mb-16 max-w-2xl">
         <Eyebrow>Contact</Eyebrow>
-        <RevealItem as="h2" className="font-display text-4xl font-bold uppercase tracking-tightest sm:text-5xl">
+        <RevealItem as="h2" className="font-display text-4xl font-normal tracking-tightest text-white sm:text-5xl">
           Ways to connect
         </RevealItem>
       </RevealGroup>
@@ -26,8 +26,7 @@ export default function Contact() {
           />
         </RevealItem>
 
-        {/* Featured card — "pricing hero" treatment from the reference */}
-        <RevealItem as="li" className="lg:-my-4">
+        <RevealItem as="li">
           <MailingListCard />
         </RevealItem>
 
@@ -50,7 +49,7 @@ export default function Contact() {
                 key={social.id}
                 href={social.url}
                 aria-label={social.label}
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-bone/60 transition-all hover:border-accent hover:text-bone hover:shadow-glow"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-graphite text-ash transition-colors duration-150 ease-out hover:border-white hover:text-white"
               >
                 <Icon className="h-5 w-5" />
               </a>
@@ -75,13 +74,13 @@ function ConnectCard({
   return (
     <motion.div
       whileHover={reduced ? undefined : { scale: 1.02 }}
-      className="flex h-full flex-col rounded-2xl border border-white/15 p-8 transition-all hover:border-accent/60 hover:shadow-glow"
+      className="flex h-full flex-col rounded-2xl border border-graphite bg-black p-8 transition-colors duration-150 ease-out hover:border-white"
     >
-      <h3 className="font-display text-2xl font-bold uppercase tracking-tight">{title}</h3>
-      <p className="mt-4 flex-1 text-sm leading-relaxed text-bone/60">{body}</p>
+      <h3 className="font-display text-2xl font-normal tracking-tight text-white">{title}</h3>
+      <p className="mt-4 flex-1 text-sm leading-relaxed text-ash">{body}</p>
       <a
         href={cta.href}
-        className="mt-8 inline-block w-fit rounded-full border border-white/25 px-6 py-3 text-sm font-semibold transition-colors hover:border-accent"
+        className="mt-8 inline-block w-fit rounded-badge border border-graphite px-6 py-3 text-sm font-medium text-bone transition-colors duration-150 ease-out hover:border-white hover:text-white"
       >
         {cta.label}
       </a>
@@ -104,18 +103,18 @@ function MailingListCard() {
   return (
     <motion.div
       whileHover={reduced ? undefined : { scale: 1.02 }}
-      className="relative flex h-full flex-col rounded-2xl border border-accent bg-accent/5 p-8 shadow-glow"
+      className="relative flex h-full flex-col rounded-2xl border border-graphite bg-[linear-gradient(rgb(27,27,27),rgb(3,3,3))] p-8"
     >
-      <span className="absolute -top-3 left-8 rounded-full bg-accent px-4 py-1 text-xs font-bold uppercase tracking-wider">
+      <span className="absolute -top-3 left-8 rounded-full border border-graphite bg-black px-4 py-1 font-mono text-xs uppercase tracking-wider text-accent-glow">
         Stay in the loop
       </span>
-      <h3 className="font-display text-2xl font-bold uppercase tracking-tight">Mailing List</h3>
-      <p className="mt-4 flex-1 text-sm leading-relaxed text-bone/60">
+      <h3 className="font-display text-2xl font-normal tracking-tight text-white">Mailing List</h3>
+      <p className="mt-4 flex-1 text-sm leading-relaxed text-ash">
         New drops, show dates, and behind-the-scenes — straight to your inbox.
         No spam, just dice.
       </p>
       {submitted ? (
-        <p role="status" className="mt-8 text-sm font-semibold text-accent">
+        <p role="status" className="mt-8 text-sm font-medium text-accent-glow">
           You’re on the list. (Demo only — this form isn’t wired to a mailing
           provider yet.)
         </p>
@@ -131,11 +130,11 @@ function MailingListCard() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="min-w-0 flex-1 rounded-full border border-white/20 bg-ink px-5 py-3 text-sm placeholder:text-bone/30 focus:border-accent"
+            className="min-w-0 flex-1 rounded-badge border border-graphite bg-black px-5 py-3 text-sm text-white placeholder:text-iron focus:border-white"
           />
           <button
             type="submit"
-            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold transition-shadow hover:shadow-glow-lg"
+            className="rounded-badge border border-graphite px-6 py-3 text-sm font-medium text-white transition-colors duration-150 ease-out hover:border-white"
           >
             Join
           </button>

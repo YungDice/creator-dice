@@ -28,10 +28,10 @@ export default function Music() {
   const hiddenCount = filtered.length - visible.length;
 
   return (
-    <section id="music" className="mx-auto max-w-6xl px-4 py-24 sm:px-6 md:py-32">
+    <section id="music" className="mx-auto max-w-[1200px] px-4 py-24 sm:px-6">
       <RevealGroup className="mb-12 max-w-2xl">
         <Eyebrow>Music</Eyebrow>
-        <RevealItem as="h2" className="font-display text-4xl font-bold uppercase tracking-tightest sm:text-5xl">
+        <RevealItem as="h2" className="font-display text-4xl font-normal tracking-tightest text-white sm:text-5xl">
           The catalog
         </RevealItem>
       </RevealGroup>
@@ -49,10 +49,10 @@ export default function Music() {
                 role="tab"
                 aria-selected={filter === f.id}
                 onClick={() => setFilter(f.id)}
-                className={`rounded-full border px-5 py-2 text-sm font-medium transition-all ${
+                className={`rounded-full border px-5 py-2 font-mono text-sm transition-colors duration-150 ease-out ${
                   filter === f.id
-                    ? "border-accent bg-accent/10 text-bone shadow-glow"
-                    : "border-white/15 text-bone/60 hover:border-white/40 hover:text-bone"
+                    ? "border-signal-blue text-white"
+                    : "border-graphite text-ash hover:border-white hover:text-white"
                 }`}
               >
                 {f.label}
@@ -88,17 +88,17 @@ export default function Music() {
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
-            className="rounded-full border border-white/25 px-8 py-3 text-sm font-semibold transition-all hover:border-accent hover:shadow-glow"
+            className="rounded-badge border border-graphite px-8 py-3 text-sm font-medium text-bone transition-colors duration-150 ease-out hover:border-white hover:text-white"
           >
             {expanded ? "Show less" : `Show all ${filtered.length} releases`}
           </button>
         </div>
       )}
 
-      <div id="work" className="mt-24 scroll-mt-24">
+      <div id="work" className="mt-24 scroll-mt-24 border-t border-graphite pt-24">
         <RevealGroup className="mb-12 max-w-2xl">
           <Eyebrow>Selected Work</Eyebrow>
-          <RevealItem as="h2" className="font-display text-4xl font-bold uppercase tracking-tightest sm:text-5xl">
+          <RevealItem as="h2" className="font-display text-4xl font-normal tracking-tightest text-white sm:text-5xl">
             Beyond the music
           </RevealItem>
         </RevealGroup>
@@ -117,7 +117,9 @@ export default function Music() {
 function PortfolioCard({ item }: { item: PortfolioItem }) {
   const reduced = useReducedMotion();
   const cardClass =
-    "group block h-full overflow-hidden rounded-2xl border border-white/15 bg-white/[0.015] transition-all hover:border-accent hover:shadow-glow";
+    "group block h-full overflow-hidden rounded-2xl border border-graphite bg-black transition-colors duration-150 ease-out hover:border-white";
+
+  const dotColor = item.status === "Live" ? "bg-pulse-green" : "bg-amber";
 
   const content = (
     <>
@@ -130,7 +132,8 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
           className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
         />
         {item.status && (
-          <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-ink/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-bone backdrop-blur">
+          <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-graphite bg-black/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-ash backdrop-blur">
+            <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
             {item.status}
           </span>
         )}
@@ -138,13 +141,13 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
       <div className="flex h-[calc(100%-auto)] flex-col p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="font-display text-xl font-bold tracking-tight">{item.title}</h3>
-            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-accent">{item.category}</p>
+            <h3 className="font-display text-xl font-normal tracking-tight text-white">{item.title}</h3>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.15em] text-accent-glow">{item.category}</p>
           </div>
-          <span className="shrink-0 text-sm text-bone/40">{item.year}</span>
+          <span className="shrink-0 text-sm text-iron">{item.year}</span>
         </div>
-        <p className="mt-4 text-sm leading-6 text-bone/55">{item.description}</p>
-        <div className="mt-5 text-sm font-medium text-bone/70">
+        <p className="mt-4 text-sm leading-6 text-ash">{item.description}</p>
+        <div className="mt-5 text-sm font-medium text-bone">
           {item.url ? "Visit project ↗" : "Project showcase"}
         </div>
       </div>
@@ -180,7 +183,7 @@ function ReleaseCard({ release }: { release: Release }) {
   return (
     <motion.article
       whileHover={reduced ? undefined : { scale: 1.02 }}
-      className="group h-full overflow-hidden rounded-2xl border border-white/15 transition-all hover:border-accent hover:shadow-glow"
+      className="group h-full overflow-hidden rounded-2xl border border-graphite bg-black transition-colors duration-150 ease-out hover:border-white"
     >
       <Image
         src={release.cover}
@@ -191,11 +194,11 @@ function ReleaseCard({ release }: { release: Release }) {
       />
       <div className="p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-lg font-bold tracking-tight">{release.title}</h3>
-          <span className="shrink-0 text-sm text-bone/40">{release.year}</span>
+          <h3 className="font-display text-lg font-normal tracking-tight text-white">{release.title}</h3>
+          <span className="shrink-0 text-sm text-iron">{release.year}</span>
         </div>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-accent">{release.type}</p>
-        {release.details && <p className="mt-2 text-sm text-bone/50">{release.details}</p>}
+        <p className="mt-1 font-mono text-xs uppercase tracking-[0.2em] text-accent-glow">{release.type}</p>
+        {release.details && <p className="mt-2 text-sm text-ash">{release.details}</p>}
         {release.previewSrc && (
           <audio controls preload="none" className="mt-4" src={release.previewSrc}>
             Your browser does not support audio previews.
@@ -206,7 +209,7 @@ function ReleaseCard({ release }: { release: Release }) {
             href={release.spotifyUrl}
             target="_blank"
             rel="noreferrer"
-            className="link-underline text-bone/60 hover:text-bone"
+            className="link-underline text-ash hover:text-white"
           >
             Spotify
           </a>
@@ -214,7 +217,7 @@ function ReleaseCard({ release }: { release: Release }) {
             href={release.appleMusicUrl}
             target="_blank"
             rel="noreferrer"
-            className="link-underline text-bone/60 hover:text-bone"
+            className="link-underline text-ash hover:text-white"
           >
             Apple Music
           </a>

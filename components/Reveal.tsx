@@ -87,7 +87,7 @@ export function Reveal({
 /** Small uppercase eyebrow label used above every section heading. */
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <RevealItem as="p" className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+    <RevealItem as="p" className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-accent">
       {children}
     </RevealItem>
   );

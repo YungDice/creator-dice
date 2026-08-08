@@ -1,17 +1,35 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const display = Space_Grotesk({
+// Domaine substitute — editorial serif for the single large hero statement.
+const hero = Playfair_Display({
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["400"],
+  variable: "--font-hero",
+  display: "swap",
+});
+
+// aBC Favorit substitute — compressed geometric sans for section headlines.
+const display = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-display",
   display: "swap",
 });
 
+// Body copy, UI labels, navigation, buttons, links.
 const body = Inter({
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+// Commit Mono substitute — code blocks, badges, labels, developer identifiers.
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -25,7 +43,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html
+      lang="en"
+      className={`${hero.variable} ${display.variable} ${body.variable} ${mono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

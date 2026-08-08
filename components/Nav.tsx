@@ -23,14 +23,14 @@ export default function Nav() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/80 backdrop-blur-md">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-graphite bg-ink/80 backdrop-blur-md">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6"
+        className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6"
       >
         <a
           href="#top"
-          className="font-display text-lg font-bold tracking-tight"
+          className="font-display text-lg font-medium tracking-tight text-white"
           onClick={() => setOpen(false)}
         >
           {site.name}
@@ -43,7 +43,7 @@ export default function Nav() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="link-underline text-sm font-medium text-bone/70 transition-colors hover:text-bone"
+                className="link-underline text-sm font-normal text-bone transition-colors hover:text-white"
               >
                 {link.label}
               </a>
@@ -52,7 +52,7 @@ export default function Nav() {
           <li>
             <a
               href={site.listenUrl}
-              className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-bone transition-shadow hover:shadow-glow"
+              className="rounded-badge border border-graphite px-4 py-2.5 text-sm font-medium text-white transition-colors duration-150 ease-out hover:border-white"
             >
               Listen Now
             </a>
@@ -85,7 +85,7 @@ export default function Nav() {
         {open && (
           <motion.div
             id="mobile-menu"
-            className="fixed inset-0 z-40 bg-ink/95 pt-16 backdrop-blur-lg md:hidden"
+            className="fixed inset-0 z-40 bg-black/95 pt-16 backdrop-blur-lg md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -101,7 +101,7 @@ export default function Nav() {
                 >
                   <a
                     href={link.href}
-                    className="font-display text-4xl font-bold tracking-tight"
+                    className="font-hero text-4xl font-normal tracking-tight text-white"
                     onClick={() => setOpen(false)}
                   >
                     {link.label}
@@ -115,7 +115,7 @@ export default function Nav() {
               >
                 <a
                   href={site.listenUrl}
-                  className="rounded-full bg-accent px-8 py-3 font-semibold"
+                  className="rounded-badge border border-graphite px-8 py-3 font-medium text-white transition-colors duration-150 ease-out hover:border-white"
                   onClick={() => setOpen(false)}
                 >
                   Listen Now

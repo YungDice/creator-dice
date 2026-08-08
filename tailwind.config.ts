@@ -9,24 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0A0A0A",
-        bone: "#F5F5F0",
+        // Resend-style "black velvet with violet neon" palette (see DESIGN.md).
+        ink: "#000000",
+        bone: "#f0f0f0",
+        graphite: "#292d30",
+        ash: "#a1a4a5",
+        smoke: "#abafb4",
+        iron: "#6e727a",
+        charcoal: "#464a4d",
         // Accent is driven by --accent-rgb in app/globals.css — swap it there
-        // (one line) to change the accent site-wide, glows included.
+        // (one line) to change the accent site-wide.
         accent: "rgb(var(--accent-rgb) / <alpha-value>)",
-        "pc-shell": "#A8C6DE",
-        "pc-deep": "#4C8FC0",
+        "accent-glow": "#baa7ff",
+        "signal-blue": "#3b9eff",
+        "sky-blue": "#70b8ff",
+        "pulse-green": "#3ad389",
+        "alarm-red": "#ff9592",
+        amber: "#ffca16",
+        "surface-lift": "#0b0e14",
+        "pc-shell": "#1c1f22",
+        "pc-deep": "#101214",
       },
       fontFamily: {
+        hero: ["var(--font-hero)", "Georgia", "serif"],
         display: ["var(--font-display)", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "system-ui", "sans-serif"],
-      },
-      boxShadow: {
-        glow: "0 0 24px 0 rgb(var(--accent-rgb) / 0.35)",
-        "glow-lg": "0 0 48px 8px rgb(var(--accent-rgb) / 0.4)",
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.04em",
+        display: "-0.01em",
+      },
+      borderRadius: {
+        badge: "6px",
+        panel: "24px",
       },
     },
   },

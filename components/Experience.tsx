@@ -87,7 +87,7 @@ export default function Experience() {
               setSceneReady(false);
               setMode("3d");
             }}
-            className="fixed bottom-5 right-5 z-50 rounded-full border border-white/20 bg-ink/80 px-5 py-2.5 text-sm font-semibold backdrop-blur transition-all hover:border-accent hover:shadow-glow"
+            className="fixed bottom-5 right-5 z-50 rounded-full border border-graphite bg-black/80 px-5 py-2.5 text-sm font-medium text-white backdrop-blur transition-colors duration-150 ease-out hover:border-white"
           >
             ▸ Back inside the PC
           </button>
@@ -115,7 +115,7 @@ export default function Experience() {
       <button
         type="button"
         onClick={() => setMode("flat")}
-        className={`fixed bottom-5 right-5 z-50 rounded-full border border-white/30 bg-ink/70 px-5 py-2.5 text-sm font-semibold text-bone backdrop-blur transition-all duration-700 hover:border-accent hover:shadow-glow ${
+        className={`fixed bottom-5 right-5 z-50 rounded-full border border-graphite bg-black/70 px-5 py-2.5 text-sm font-medium text-bone backdrop-blur transition-all duration-700 hover:border-white ${
           sceneReady ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
         }`}
       >
@@ -127,15 +127,9 @@ export default function Experience() {
 
 function MonitorFrame({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="fixed inset-0"
-      style={{
-        background:
-          "radial-gradient(120% 90% at 50% 35%, #7FB3D8 0%, #4C8FC0 55%, #3B76A4 100%)",
-      }}
-    >
-      <div className="absolute inset-0 sm:inset-x-10 sm:bottom-5 sm:top-6 sm:rounded-[28px] sm:bg-[#A8C6DE] sm:p-4 sm:pb-12 sm:shadow-[0_30px_80px_rgba(20,50,80,0.45)] lg:inset-x-20">
-        <div className="h-full w-full sm:rounded-2xl sm:bg-[#EFEFE8] sm:p-2.5">
+    <div className="fixed inset-0 bg-black">
+      <div className="absolute inset-0 sm:inset-x-10 sm:bottom-5 sm:top-6 sm:rounded-panel sm:border sm:border-graphite sm:bg-[#0b0e14] sm:p-4 sm:pb-12 lg:inset-x-20">
+        <div className="h-full w-full sm:rounded-2xl sm:border sm:border-graphite sm:bg-black sm:p-2.5">
           <div className="h-full w-full overflow-hidden bg-ink sm:rounded-lg" style={{ transform: "translateZ(0)" }}>
             {children}
           </div>
@@ -143,12 +137,12 @@ function MonitorFrame({ children }: { children: ReactNode }) {
         <div className="absolute inset-x-9 bottom-3 hidden h-6 items-center justify-between sm:flex">
           <span
             aria-hidden="true"
-            className="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(232,56,79,0.7)]"
+            className="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(146,129,247,0.55)]"
           />
-          <span aria-hidden="true" className="h-1.5 w-44 rounded-full bg-[#1E2A34]" />
+          <span aria-hidden="true" className="h-1.5 w-44 rounded-full bg-graphite" />
           <span aria-hidden="true" className="flex items-center gap-1">
-            <span className="h-2 w-14 rounded-sm bg-[#86A9C8]" />
-            <span className="h-2 w-3 rounded-sm bg-[#86A9C8]" />
+            <span className="h-2 w-14 rounded-sm bg-graphite" />
+            <span className="h-2 w-3 rounded-sm bg-graphite" />
           </span>
         </div>
       </div>
