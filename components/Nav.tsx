@@ -1,130 +1,112 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { List, X } from "@phosphor-icons/react";
 import { navLinks, site } from "@/data/site";
 
-export default function Nav() {
+/**
+ * Split navigation around a stacked wordmark, like a magazine masthead.
+ * Desktop: two links, logo, one link, Listen. Mobile: menu, logo, Listen.
+ */
+export function Nav() {
   const [open, setOpen] = useState(false);
-  const reduced = useReducedMotion();
 
-  // Lock page scroll while the mobile menu is open, close it on Escape.
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
     return () => {
+      document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
+  const [left1, left2, right1] = navLinks;
+  const link =
+    "font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-on-brand/80 transition-colors hover:text-on-brand";
+
   return (
-    <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-graphite bg-ink/80 backdrop-blur-md">
+    <header className="relative z-30 text-on-brand">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6"
+        className="mx-auto grid h-[72px] max-w-page grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-8 lg:grid-cols-5"
       >
-        <a
-          href="#top"
-          className="font-display text-lg font-medium tracking-tight text-white"
-          onClick={() => setOpen(false)}
-        >
-          {site.name}
-          <span className="text-accent">.</span>
-        </a>
-
-        {/* Desktop links */}
-        <ul className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="link-underline text-sm font-normal text-bone transition-colors hover:text-white"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-          <li>
-            <a
-              href={site.listenUrl}
-              className="rounded-badge border border-graphite px-4 py-2.5 text-sm font-medium text-white transition-colors duration-150 ease-out hover:border-white"
-            >
-              Listen Now
-            </a>
-          </li>
-        </ul>
-
-        {/* Mobile hamburger */}
+        {/* mobile: menu button */}
         <button
           type="button"
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          onClick={() => setOpen(true)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
+          className="inline-flex h-11 w-11 items-center justify-start lg:hidden"
         >
-          <span
-            className={`h-0.5 w-6 bg-bone transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
-          />
-          <span className={`h-0.5 w-6 bg-bone transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span
-            className={`h-0.5 w-6 bg-bone transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
-          />
+          <List size={26} weight="light" aria-hidden />
+          <span className="sr-only">Open menu</span>
         </button>
-        </nav>
-      </header>
 
-      {/* Full-screen mobile menu — sibling of the header: backdrop-filter on an
-          ancestor would turn it into the containing block for this fixed overlay. */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="mobile-menu"
-            className="fixed inset-0 z-40 bg-black/95 pt-16 backdrop-blur-lg md:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduced ? 0 : 0.2 }}
-          >
-            <ul className="flex h-full flex-col items-center justify-center gap-8 pb-24">
-              {navLinks.map((link, i) => (
-                <motion.li
-                  key={link.href}
-                  initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: reduced ? 0 : 0.05 * i, duration: 0.3 }}
-                >
-                  <a
-                    href={link.href}
-                    className="font-hero text-4xl font-normal tracking-tight text-white"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                </motion.li>
-              ))}
-              <motion.li
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: reduced ? 0 : 0.25 }}
-              >
+        <a href={left1.href} className={`${link} hidden justify-self-start lg:block`}>
+          {left1.label}
+        </a>
+        <a href={left2.href} className={`${link} hidden justify-self-center lg:block`}>
+          {left2.label}
+        </a>
+
+        <a
+          href="#top"
+          aria-label="Yung Dice, back to top"
+          className="justify-self-center text-center font-display text-[22px] font-bold uppercase leading-[0.82] tracking-[0.01em]"
+        >
+          Yung
+          <br />
+          Dice
+        </a>
+
+        <a href={right1.href} className={`${link} hidden justify-self-center lg:block`}>
+          {right1.label}
+        </a>
+
+        <a href={site.listenUrl} className="btn btn-solid min-h-9 justify-self-end px-3 text-[14px]">
+          Listen
+        </a>
+      </nav>
+
+      {open && (
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="fixed inset-0 z-50 flex flex-col bg-brand px-4 pb-8 text-on-brand"
+        >
+          <div className="flex h-[72px] items-center">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="inline-flex h-11 w-11 items-center"
+              autoFocus
+            >
+              <X size={26} weight="light" aria-hidden />
+              <span className="sr-only">Close menu</span>
+            </button>
+          </div>
+          <ul className="mt-6 space-y-2">
+            {navLinks.map((l) => (
+              <li key={l.href}>
                 <a
-                  href={site.listenUrl}
-                  className="rounded-badge border border-graphite px-8 py-3 font-medium text-white transition-colors duration-150 ease-out hover:border-white"
+                  href={l.href}
                   onClick={() => setOpen(false)}
+                  className="display block py-1 text-[72px]"
                 >
-                  Listen Now
+                  {l.label}
                 </a>
-              </motion.li>
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+              </li>
+            ))}
+          </ul>
+          <a href={`mailto:${site.bookingEmail}`} className="label mt-auto text-on-brand/80">
+            {site.bookingEmail}
+          </a>
+        </div>
+      )}
+    </header>
   );
 }
