@@ -1,97 +1,58 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
+import { SpotifyLogo, AppleLogo } from "@phosphor-icons/react/dist/ssr";
 import { site } from "@/data/site";
-import { fade, fadeUp, stagger } from "@/lib/motion";
 
-export default function Hero() {
-  const reduced = useReducedMotion();
-
+/**
+ * Split hero. Left: the headline and two ways to listen. Right: cover art
+ * from "bottomless" inverted into white line-work on the brand red, the
+ * same trick the reference site uses with its engraved illustration.
+ */
+export function Hero() {
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden pb-24 pt-40 sm:pt-48 [.pc-screen_&]:pt-32"
-    >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <motion.div
-          variants={reduced ? undefined : stagger(0.1, 0.15)}
-          initial="hidden"
-          animate="show"
-        >
-          <motion.p
-            variants={reduced ? fade : fadeUp}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-graphite px-3 py-1.5 text-sm text-bone"
-          >
-            <span aria-hidden="true" className="text-accent">
-              ▸
-            </span>
-            Artist · Producer
-          </motion.p>
-          <motion.h1
-            variants={reduced ? fade : fadeUp}
-            className="max-w-[820px] font-hero text-5xl font-normal leading-[1] tracking-display text-white sm:text-6xl lg:text-7xl xl:text-8xl"
-          >
-            {site.heroTagline}
-          </motion.h1>
-          <motion.p
-            variants={reduced ? fade : fadeUp}
-            className="mt-8 max-w-xl text-base text-ash sm:text-lg"
-          >
-            {site.heroSub}
-          </motion.p>
-          <motion.div variants={reduced ? fade : fadeUp} className="mt-10 flex flex-wrap gap-4">
-            <a
-              href={site.listenUrl}
-              className="rounded-badge border border-graphite px-8 py-3.5 font-medium text-white transition-colors duration-150 ease-out hover:border-white"
-            >
-              Listen
-            </a>
-            <a
-              href="#contact"
-              className="rounded-badge border border-graphite px-8 py-3.5 font-medium text-bone transition-colors duration-150 ease-out hover:border-white hover:text-white"
-            >
-              Book Yung Dice
-            </a>
-          </motion.div>
-          <motion.div
-            variants={reduced ? fade : fadeUp}
-            className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-graphite pt-8"
-          >
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-iron">
-              As heard on
-            </span>
-            {site.heardOn.map((name) => (
-              <span key={name} className="font-mono text-sm text-smoke">
-                {name}
+    <section id="top" className="relative overflow-hidden text-on-brand">
+      <div className="mx-auto grid max-w-page items-center gap-8 px-4 pb-16 pt-10 sm:px-8 md:grid-cols-[1.1fr_1fr] md:pb-24 md:pt-16">
+        <div className="relative z-10">
+          <h1 className="display text-[clamp(84px,15vw,200px)]">
+            {site.heroLines.map((line, i) => (
+              <span key={line} className="rise block" style={{ ["--i" as string]: i }}>
+                {line}
               </span>
             ))}
-          </motion.div>
-        </motion.div>
-      </div>
+          </h1>
+          <p
+            className="rise mt-7 max-w-[34ch] text-[17px] leading-relaxed text-on-brand/90"
+            style={{ ["--i" as string]: 2 }}
+          >
+            {site.heroSub}
+          </p>
+          <div className="rise mt-8 flex flex-wrap gap-2" style={{ ["--i" as string]: 3 }}>
+            <a href={site.listenUrl} className="btn btn-solid">
+              <SpotifyLogo size={20} weight="fill" aria-hidden />
+              Listen
+            </a>
+            <a href={site.appleMusicUrl} className="btn btn-ghost">
+              <AppleLogo size={18} weight="fill" aria-hidden />
+              Apple Music
+            </a>
+          </div>
+        </div>
 
-      {/* Scroll cue */}
-      <motion.a
-        href="#about"
-        aria-label="Scroll to About section"
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-iron transition-colors hover:text-accent md:block"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.6 }}
-      >
-        <motion.svg
-          viewBox="0 0 24 24"
-          className="h-8 w-8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          animate={reduced ? undefined : { y: [0, 6, 0] }}
-          transition={reduced ? undefined : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        <div
+          className="duo-screen relative mx-auto aspect-square w-full max-w-[560px] md:max-w-none"
+          style={{
+            maskImage: "radial-gradient(closest-side, #000 72%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(closest-side, #000 72%, transparent 100%)",
+          }}
         >
-          <path d="M6 9l6 6 6-6" />
-        </motion.svg>
-      </motion.a>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/covers/bottomless.webp"
+            alt="Line drawing of a figure holding goggles to his face, from the bottomless cover"
+            width={800}
+            height={800}
+            fetchPriority="high"
+          />
+        </div>
+      </div>
     </section>
   );
 }

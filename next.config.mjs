@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Static export — deployable to any static host, and works on Vercel as-is.
+  // Static export: deploys to Vercel (or any static host) as plain files.
   output: "export",
-  images: {
-    // next/image optimization requires a server; static export needs this off.
-    unoptimized: true,
-  },
+  images: { unoptimized: true },
 };
 
 export default nextConfig;

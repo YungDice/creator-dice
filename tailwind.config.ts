@@ -1,49 +1,28 @@
 import type { Config } from "tailwindcss";
 
+// Every colour is a CSS variable so the same components render in the
+// Yung Dice red theme and the Uptime orange theme (see app/globals.css).
+const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+
 const config: Config = {
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./data/**/*.{ts,tsx}",
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // Resend-style "black velvet with violet neon" palette (see DESIGN.md).
-        ink: "#000000",
-        bone: "#f0f0f0",
-        graphite: "#292d30",
-        ash: "#a1a4a5",
-        smoke: "#abafb4",
-        iron: "#6e727a",
-        charcoal: "#464a4d",
-        // Accent is driven by --accent-rgb in app/globals.css — swap it there
-        // (one line) to change the accent site-wide.
-        accent: "rgb(var(--accent-rgb) / <alpha-value>)",
-        "accent-glow": "#baa7ff",
-        "signal-blue": "#3b9eff",
-        "sky-blue": "#70b8ff",
-        "pulse-green": "#3ad389",
-        "alarm-red": "#ff9592",
-        amber: "#ffca16",
-        "surface-lift": "#0b0e14",
-        "pc-shell": "#1c1f22",
-        "pc-deep": "#101214",
+        brand: token("brand"),
+        "brand-text": token("brand-text"),
+        "brand-deep": token("brand-deep"),
+        "on-brand": token("on-brand"),
+        paper: token("paper"),
+        ink: token("ink"),
       },
       fontFamily: {
-        hero: ["var(--font-hero)", "Georgia", "serif"],
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
-        body: ["var(--font-body)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+        display: ['"Big Shoulders Display Variable"', "Impact", "sans-serif"],
+        sans: ['"Geist Variable"', "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ['"Geist Mono Variable"', "ui-monospace", "monospace"],
       },
-      letterSpacing: {
-        tightest: "-0.04em",
-        display: "-0.01em",
-      },
-      borderRadius: {
-        badge: "6px",
-        panel: "24px",
-      },
+      maxWidth: { page: "1360px" },
+      transitionTimingFunction: { out: "cubic-bezier(0.16, 1, 0.3, 1)" },
     },
   },
   plugins: [],

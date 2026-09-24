@@ -1,228 +1,117 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
-import { useState } from "react";
-import { Eyebrow, RevealGroup, RevealItem } from "@/components/Reveal";
-import {
-  discography,
-  releaseFilters,
-  type Release,
-  type ReleaseType,
-} from "@/data/discography";
-import { portfolioItems, type PortfolioItem } from "@/data/portfolio";
-import { EASE } from "@/lib/motion";
+import { useMemo, useState } from "react";
+import { discography, type ReleaseType } from "@/data/discography";
+
+const TYPE_LABEL: Record<ReleaseType, string> = {
+  single: "Singles",
+  album: "Albums & EPs",
+  feature: "Features",
+};
 
 type Filter = "all" | ReleaseType;
 
-/** How many releases show before the "Show all" button expands the grid. */
-const COLLAPSED_COUNT = 9;
-
-export default function Music() {
+/**
+ * The full catalogue as a record shelf. Filters only appear for types that
+ * actually have releases, so there is never an empty tab.
+ */
+export function Music() {
   const [filter, setFilter] = useState<Filter>("all");
-  const [expanded, setExpanded] = useState(false);
-  const reduced = useReducedMotion();
 
-  const filtered = discography.filter((r) => filter === "all" || r.type === filter);
-  const visible = expanded ? filtered : filtered.slice(0, COLLAPSED_COUNT);
-  const hiddenCount = filtered.length - visible.length;
+  const filters = useMemo(() => {
+    const types = Array.from(new Set(discography.map((r) => r.type)));
+    return [
+      { id: "all" as Filter, label: "All", count: discography.length },
+      ...types.map((t) => ({
+        id: t as Filter,
+        label: TYPE_LABEL[t],
+        count: discography.filter((r) => r.type === t).length,
+      })),
+    ];
+  }, []);
+
+  const shown = filter === "all" ? discography : discography.filter((r) => r.type === filter);
 
   return (
-    <section id="music" className="mx-auto max-w-[1200px] px-4 py-24 sm:px-6">
-      <RevealGroup className="mb-12 max-w-2xl">
-        <Eyebrow>Music</Eyebrow>
-        <RevealItem as="h2" className="font-display text-4xl font-normal tracking-tightest text-white sm:text-5xl">
-          The catalog
-        </RevealItem>
-      </RevealGroup>
+    <section id="music" aria-labelledby="music-title" className="scroll-mt-4 px-4 py-20 sm:px-8 md:py-24">
+      <div className="mx-auto max-w-page">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <h2 id="music-title" className="heading text-[clamp(56px,8vw,96px)] text-ink" data-reveal>
+            Music
+          </h2>
 
-      {/* Filter tabs */}
-      <RevealGroup className="mb-10">
-        <RevealItem
-          as="div"
-          className="flex flex-wrap gap-2"
-        >
-          <div role="tablist" aria-label="Filter releases" className="contents">
-            {releaseFilters.map((f) => (
-              <button
-                key={f.id}
-                role="tab"
-                aria-selected={filter === f.id}
-                onClick={() => setFilter(f.id)}
-                className={`rounded-full border px-5 py-2 font-mono text-sm transition-colors duration-150 ease-out ${
-                  filter === f.id
-                    ? "border-signal-blue text-white"
-                    : "border-graphite text-ash hover:border-white hover:text-white"
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </RevealItem>
-      </RevealGroup>
-
-      {/* Release grid */}
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout">
-          {visible.map((release, i) => (
-            <motion.li
-              key={release.id}
-              layout={!reduced}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 24 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                transition: { duration: 0.4, ease: EASE, delay: reduced ? 0 : i * 0.06 },
-              }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            >
-              <ReleaseCard release={release} />
-            </motion.li>
-          ))}
-        </AnimatePresence>
-      </ul>
-
-      {(hiddenCount > 0 || expanded) && filtered.length > COLLAPSED_COUNT && (
-        <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setExpanded((e) => !e)}
-            className="rounded-badge border border-graphite px-8 py-3 text-sm font-medium text-bone transition-colors duration-150 ease-out hover:border-white hover:text-white"
+          {/* Segmented filter, styled after the reference site's OS tabs. */}
+          <div
+            role="group"
+            aria-label="Filter releases"
+            className="grid w-full grid-cols-3 bg-ink/[0.06] p-1 font-mono text-[12px] uppercase tracking-[0.06em] sm:flex sm:w-auto"
           >
-            {expanded ? "Show less" : `Show all ${filtered.length} releases`}
-          </button>
+            {filters.map((f) => {
+              const active = filter === f.id;
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setFilter(f.id)}
+                  className={`min-h-10 whitespace-nowrap px-2 transition-colors duration-200 sm:px-4 ${
+                    active ? "bg-brand text-on-brand" : "text-ink/75 hover:text-ink"
+                  }`}
+                >
+                  <span aria-hidden className={`hidden sm:inline ${active ? "opacity-70" : "opacity-40"}`}>
+                    :{" "}
+                  </span>
+                  {f.label}
+                  <span className="ml-1.5 opacity-60">{f.count}</span>
+                  <span aria-hidden className={`hidden sm:inline ${active ? "opacity-70" : "opacity-40"}`}>
+                    {" "}:
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      )}
 
-      <div id="work" className="mt-24 scroll-mt-24 border-t border-graphite pt-24">
-        <RevealGroup className="mb-12 max-w-2xl">
-          <Eyebrow>Selected Work</Eyebrow>
-          <RevealItem as="h2" className="font-display text-4xl font-normal tracking-tightest text-white sm:text-5xl">
-            Beyond the music
-          </RevealItem>
-        </RevealGroup>
-        <RevealGroup as="ul" step={0.1} className="grid gap-6 sm:grid-cols-2">
-          {portfolioItems.map((item) => (
-            <RevealItem as="li" key={item.id} className="h-full">
-              <PortfolioCard item={item} />
-            </RevealItem>
+        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {shown.map((r, i) => (
+            <li
+              key={r.id}
+              className={`group ${i === 0 && shown.length > 8 ? "lg:col-span-2 lg:row-span-2" : ""}`}
+            >
+              <a href={r.spotifyUrl} aria-label={`${r.title} on Spotify`} className="block">
+                <span className="duo duo-live aspect-square w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={r.cover}
+                    alt={r.coverAlt}
+                    width={800}
+                    height={800}
+                    loading="lazy"
+                    decoding="async"
+                    className="group-hover:scale-[1.03]"
+                  />
+                </span>
+              </a>
+              <h3 className={`mt-3 font-display font-semibold uppercase leading-[1.05] text-ink [text-wrap:balance] ${
+                  i === 0 && shown.length > 8 ? "text-[22px] lg:text-[40px]" : "text-[22px]"
+                }`}>
+                {r.title}
+              </h3>
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.06em] text-ink/70">
+                <span>
+                  {r.year} {r.type === "album" ? "LP / EP" : "Single"}
+                </span>
+                <a
+                  href={r.appleMusicUrl}
+                  className="underline decoration-ink/30 underline-offset-2 hover:text-brand-text hover:decoration-current"
+                >
+                  Apple Music
+                </a>
+              </div>
+            </li>
           ))}
-        </RevealGroup>
+        </ul>
       </div>
     </section>
-  );
-}
-
-function PortfolioCard({ item }: { item: PortfolioItem }) {
-  const reduced = useReducedMotion();
-  const cardClass =
-    "group block h-full overflow-hidden rounded-2xl border border-graphite bg-black transition-colors duration-150 ease-out hover:border-white";
-
-  const dotColor = item.status === "Live" ? "bg-pulse-green" : "bg-amber";
-
-  const content = (
-    <>
-      <div className="relative overflow-hidden">
-        <Image
-          src={item.image}
-          alt={item.imageAlt}
-          width={1600}
-          height={900}
-          className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
-        />
-        {item.status && (
-          <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-graphite bg-black/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-ash backdrop-blur">
-            <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
-            {item.status}
-          </span>
-        )}
-      </div>
-      <div className="flex h-[calc(100%-auto)] flex-col p-5 sm:p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h3 className="font-display text-xl font-normal tracking-tight text-white">{item.title}</h3>
-            <p className="mt-1 font-mono text-xs uppercase tracking-[0.15em] text-accent-glow">{item.category}</p>
-          </div>
-          <span className="shrink-0 text-sm text-iron">{item.year}</span>
-        </div>
-        <p className="mt-4 text-sm leading-6 text-ash">{item.description}</p>
-        <div className="mt-5 text-sm font-medium text-bone">
-          {item.url ? "Visit project ↗" : "Project showcase"}
-        </div>
-      </div>
-    </>
-  );
-
-  if (item.url) {
-    return (
-      <motion.a
-        href={item.url}
-        target="_blank"
-        rel="noreferrer"
-        whileHover={reduced ? undefined : { scale: 1.015 }}
-        className={cardClass}
-      >
-        {content}
-      </motion.a>
-    );
-  }
-
-  return (
-    <motion.article
-      whileHover={reduced ? undefined : { scale: 1.015 }}
-      className={cardClass}
-    >
-      {content}
-    </motion.article>
-  );
-}
-
-function ReleaseCard({ release }: { release: Release }) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.article
-      whileHover={reduced ? undefined : { scale: 1.02 }}
-      className="group h-full overflow-hidden rounded-2xl border border-graphite bg-black transition-colors duration-150 ease-out hover:border-white"
-    >
-      <Image
-        src={release.cover}
-        alt={release.coverAlt}
-        width={800}
-        height={800}
-        className="aspect-square w-full object-cover"
-      />
-      <div className="p-5">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-lg font-normal tracking-tight text-white">{release.title}</h3>
-          <span className="shrink-0 text-sm text-iron">{release.year}</span>
-        </div>
-        <p className="mt-1 font-mono text-xs uppercase tracking-[0.2em] text-accent-glow">{release.type}</p>
-        {release.details && <p className="mt-2 text-sm text-ash">{release.details}</p>}
-        {release.previewSrc && (
-          <audio controls preload="none" className="mt-4" src={release.previewSrc}>
-            Your browser does not support audio previews.
-          </audio>
-        )}
-        <div className="mt-4 flex gap-5 text-sm">
-          <a
-            href={release.spotifyUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="link-underline text-ash hover:text-white"
-          >
-            Spotify
-          </a>
-          <a
-            href={release.appleMusicUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="link-underline text-ash hover:text-white"
-          >
-            Apple Music
-          </a>
-        </div>
-      </div>
-    </motion.article>
   );
 }
