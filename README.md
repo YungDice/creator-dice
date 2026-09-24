@@ -19,11 +19,13 @@ npm run build    # static site in out/
 | `data/uptime.ts` | Uptime page copy and the **three install links** (`href`). Empty href = "soon" button. |
 | `app/globals.css` | Colour tokens for both themes, duotone image treatment, buttons, motion. |
 
-## Domains (Vercel)
+## Domains (Netlify)
+
+Build command `npm run build`, publish directory `out`.
 
 - `yungdice.com` serves `/`.
-- `uptime.yungdice.com`: add the domain to the same Vercel project. `vercel.json` rewrites
-  that host's `/` to `/uptime`, so no second project is needed.
+- `uptime.yungdice.com`: add it as a domain alias on the same Netlify site.
+  `public/_redirects` serves `/uptime.html` at that host's root, so no second site is needed.
 - `nexo.delidev.net` and `dice-masters.yungdice.com` are separate apps; this site only links to them.
 
 ## House rules
