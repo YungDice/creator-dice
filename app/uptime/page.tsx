@@ -7,7 +7,7 @@ import { uptime } from "@/data/uptime";
 export const metadata: Metadata = {
   title: { absolute: "Uptime: a streak you keep by existing" },
   description: uptime.sub,
-  icons: { icon: "/images/projects/uptime.png" },
+  icons: { icon: "/images/uptime/icon.svg", apple: "/images/uptime/apple-touch-icon.png" },
   alternates: { canonical: "https://uptime.yungdice.com" },
   openGraph: {
     title: "Uptime",
@@ -38,7 +38,11 @@ export default function UptimePage() {
           aria-label="Uptime"
           className="mx-auto flex h-[72px] max-w-page items-center justify-between px-4 sm:px-8"
         >
-          <span className="font-display text-[26px] font-bold uppercase tracking-[0.02em]">Uptime</span>
+          <span className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/uptime/icon.svg" alt="" width={36} height={36} className="h-9 w-9" />
+            <span className="font-display text-[26px] font-bold uppercase tracking-[0.02em]">Uptime</span>
+          </span>
           <a
             href={HOME}
             className="inline-flex min-h-11 items-center gap-1 font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-on-brand/80 hover:text-on-brand"
