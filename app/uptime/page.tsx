@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { InstallButtons } from "@/components/uptime/InstallButtons";
 import { RevealObserver } from "@/components/Reveal";
+import { UptimeFooter } from "@/components/uptime/UptimeChrome";
 import { uptime } from "@/data/uptime";
 
 export const metadata: Metadata = {
@@ -166,14 +167,7 @@ export default function UptimePage() {
           </div>
         </section>
       </main>
-
-      <footer className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-4 border-t border-on-brand/20 px-4 py-8 font-mono text-[11px] uppercase tracking-[0.08em] sm:px-8">
-        <span>&copy; {new Date().getFullYear()} Yung Dice</span>
-        <a href={HOME} className="inline-flex min-h-11 items-center gap-1 hover:underline">
-          yungdice.com
-          <ArrowUpRight size={14} weight="bold" aria-hidden />
-        </a>
-      </footer>
+      <UptimeFooter />
       <RevealObserver />
     </div>
   );

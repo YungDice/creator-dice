@@ -2,3 +2,5 @@
 # Only "/" is rewritten, so /_next/* assets and /images/* still load normally.
 https://uptime.yungdice.com/   /uptime.html   200!
 http://uptime.yungdice.com/    /uptime.html   200!
+https://uptime.yungdice.com/privacy   /uptime/privacy.html   200!
+http://uptime.yungdice.com/privacy    /uptime/privacy.html   200!
