@@ -29,7 +29,7 @@ export const projects: Project[] = [
     description:
       "The stopwatch you never stopped, as an app. Send time off your clock to a friend, or spend it reviving a broken streak.",
     url: "https://uptime.yungdice.com",
-    icon: "/images/projects/uptime.png",
+    icon: "/images/projects/uptime.svg",
     iconAlt: "Uptime app icon",
   },
   {

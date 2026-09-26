@@ -33,11 +33,11 @@ export const uptime = {
     },
   ],
   boards: [
-    "Current streak",
-    "Longest ever",
-    "Lifetime total",
-    "Most donated",
+    "Running now",
+    "Hall of fame",
+    "Career total",
+    "Most given",
     "Most received",
-    "Most rescues",
+    "Rescues",
   ],
 } as const;
